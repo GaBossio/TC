@@ -14,7 +14,8 @@ STRING      : '"' (~["\r\n] | '\\"')* '"' ;
 BOOLEAN     : 'true' | 'false' ;
 
 // Palabras clave
-KEYWORD     : 'var' | 'if' | 'else' | 'print' | 'while' | 'function' | 'return' ;
+KEYWORD     :  'if' | 'else' | 'print' | 'while' | 'function' | 'return' ;
+//KEYWORD     : 'var' | 'if' | 'else' | 'print' | 'while' | 'function' | 'return' ;
 
 // Operadores
 OPERATOR    : '+' | '-' | '*' | '/' | '%' | '=' | '==' | '!=' | '<' | '>' | '<=' | '>=' | '&&' | '||' | '!' ;
