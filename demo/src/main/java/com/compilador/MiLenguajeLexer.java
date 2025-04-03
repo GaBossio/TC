@@ -1,4 +1,4 @@
-// Generated from com\compilador\MiniLenguaje.g4 by ANTLR 4.9.3
+// Generated from com\compilador\MiLenguaje.g4 by ANTLR 4.9.3
 package com.compilador;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class MiniLenguajeLexer extends Lexer {
+public class MiLenguajeLexer extends Lexer {
 	static { RuntimeMetaData.checkVersion("4.9.3", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -81,13 +81,13 @@ public class MiniLenguajeLexer extends Lexer {
 	}
 
 
-	public MiniLenguajeLexer(CharStream input) {
+	public MiLenguajeLexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
 	@Override
-	public String getGrammarFileName() { return "MiniLenguaje.g4"; }
+	public String getGrammarFileName() { return "MiLenguaje.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }

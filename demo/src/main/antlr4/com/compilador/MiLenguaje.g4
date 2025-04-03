@@ -1,4 +1,4 @@
-grammar MiniLenguaje;
+grammar MiLenguaje;
 
 // Reglas del parser (simplificadas)
 program : token* EOF ;

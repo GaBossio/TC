@@ -1,4 +1,4 @@
-// Generated from com\compilador\MiniLenguaje.g4 by ANTLR 4.9.3
+// Generated from com\compilador\MiLenguaje.g4 by ANTLR 4.9.3
 package com.compilador;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class MiniLenguajeParser extends Parser {
+public class MiLenguajeParser extends Parser {
 	static { RuntimeMetaData.checkVersion("4.9.3", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -74,7 +74,7 @@ public class MiniLenguajeParser extends Parser {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "MiniLenguaje.g4"; }
+	public String getGrammarFileName() { return "MiLenguaje.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }
@@ -85,13 +85,13 @@ public class MiniLenguajeParser extends Parser {
 	@Override
 	public ATN getATN() { return _ATN; }
 
-	public MiniLenguajeParser(TokenStream input) {
+	public MiLenguajeParser(TokenStream input) {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
 	public static class ProgramContext extends ParserRuleContext {
-		public TerminalNode EOF() { return getToken(MiniLenguajeParser.EOF, 0); }
+		public TerminalNode EOF() { return getToken(MiLenguajeParser.EOF, 0); }
 		public List<TokenContext> token() {
 			return getRuleContexts(TokenContext.class);
 		}
@@ -104,15 +104,15 @@ public class MiniLenguajeParser extends Parser {
 		@Override public int getRuleIndex() { return RULE_program; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MiniLenguajeListener ) ((MiniLenguajeListener)listener).enterProgram(this);
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).enterProgram(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MiniLenguajeListener ) ((MiniLenguajeListener)listener).exitProgram(this);
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).exitProgram(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MiniLenguajeVisitor ) return ((MiniLenguajeVisitor<? extends T>)visitor).visitProgram(this);
+			if ( visitor instanceof MiLenguajeVisitor ) return ((MiLenguajeVisitor<? extends T>)visitor).visitProgram(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -154,27 +154,27 @@ public class MiniLenguajeParser extends Parser {
 	}
 
 	public static class TokenContext extends ParserRuleContext {
-		public TerminalNode ID() { return getToken(MiniLenguajeParser.ID, 0); }
-		public TerminalNode INTEGER() { return getToken(MiniLenguajeParser.INTEGER, 0); }
-		public TerminalNode STRING() { return getToken(MiniLenguajeParser.STRING, 0); }
-		public TerminalNode KEYWORD() { return getToken(MiniLenguajeParser.KEYWORD, 0); }
-		public TerminalNode OPERATOR() { return getToken(MiniLenguajeParser.OPERATOR, 0); }
-		public TerminalNode SEPARATOR() { return getToken(MiniLenguajeParser.SEPARATOR, 0); }
+		public TerminalNode ID() { return getToken(MiLenguajeParser.ID, 0); }
+		public TerminalNode INTEGER() { return getToken(MiLenguajeParser.INTEGER, 0); }
+		public TerminalNode STRING() { return getToken(MiLenguajeParser.STRING, 0); }
+		public TerminalNode KEYWORD() { return getToken(MiLenguajeParser.KEYWORD, 0); }
+		public TerminalNode OPERATOR() { return getToken(MiLenguajeParser.OPERATOR, 0); }
+		public TerminalNode SEPARATOR() { return getToken(MiLenguajeParser.SEPARATOR, 0); }
 		public TokenContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_token; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof MiniLenguajeListener ) ((MiniLenguajeListener)listener).enterToken(this);
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).enterToken(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof MiniLenguajeListener ) ((MiniLenguajeListener)listener).exitToken(this);
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).exitToken(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof MiniLenguajeVisitor ) return ((MiniLenguajeVisitor<? extends T>)visitor).visitToken(this);
+			if ( visitor instanceof MiLenguajeVisitor ) return ((MiLenguajeVisitor<? extends T>)visitor).visitToken(this);
 			else return visitor.visitChildren(this);
 		}
 	}
