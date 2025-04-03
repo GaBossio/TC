@@ -160,4 +160,59 @@ COMMENT     : '//' ~[\r\n]* -> skip ;
 BLOCK_COMMENT : '/*' .*? '*/' -> skip ;
 ```
 
-🎯 **Con esto, tenemos la configuración básica para comenzar el desarrollo del compilador TC25 utilizando Maven y ANTLR. ¡Hora de codificar! 🚀🔥**
+🎯 **Con esto, tenemos la configuración básica para comenzar el desarrollo del compilador TC25 utilizando Maven y ANTLR. ¡Hora de codear! 🚀🔥**
+
+
+## 📝 Ejemplo de Código  
+
+A continuación, se muestra un **programa de ejemplo** y su salida del **análisis léxico**.  
+
+### 📌 Código de entrada  
+
+```c
+// Este es un programa de ejemplo
+var x = 10;
+var mensaje = "Hola mundo!";
+
+if (x > 5) {
+    print mensaje;
+}
+```
+
+---
+
+### 📊 Salida del Análisis Léxico  
+
+```
+Análisis léxico completado.
+SEPARATOR            (                              5          3
+ID                   x                              5          4
+OPERATOR             >                              5          6
+INTEGER              5                              5          8
+SEPARATOR            )                              5          9
+SEPARATOR            {                              5          11
+ID                   print                          6          4
+ID                   mensaje                        6          10
+SEPARATOR            ;                              6          17
+SEPARATOR            }                              7          0
+
+Análisis léxico completado.
+```
+
+---
+
+## 🚀 ¡Hora de Compilar y Ejecutar!  
+
+Para compilar el proyecto y probarlo, ejecuta:  
+
+```bash
+mvn clean package
+```
+
+📌 Luego, puedes ejecutar el **JAR generado** con:  
+
+```bash
+java -jar target/demo-1.0-jar-with-dependencies.jar
+```
+
+🔹 **Próximo paso:** Implementar el **análisis sintáctico y semántico** 🛠️✨  
