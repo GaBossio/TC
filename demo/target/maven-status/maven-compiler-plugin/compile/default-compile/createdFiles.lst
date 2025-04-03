@@ -1,4 +1,5 @@
 com\compilador\MiLenguajeParser$TokenContext.class
+com\compilador\App$1.class
 com\compilador\MiLenguajeParser.class
 com\compilador\MiLenguajeVisitor.class
 com\compilador\MiLenguajeBaseListener.class
