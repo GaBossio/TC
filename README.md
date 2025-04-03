@@ -109,7 +109,7 @@ Actualizamos el archivo `pom.xml` para incluir la dependencia de ANTLR y los plu
   </plugin>
 </plugins>
 
-Configuración de ANTLR para el Análisis Léxico
+##Configuración de ANTLR para el Análisis Léxico
 2. Creación de la estructura de directorios para ANTLR
 Creamos el directorio donde residirán nuestros archivos de gramática ANTLR:
 bashCopiarmkdir -p src/main/antlr4/com/compilador
