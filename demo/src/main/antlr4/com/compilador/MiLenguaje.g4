@@ -8,19 +8,33 @@ token   : ID | INTEGER | STRING | KEYWORD | OPERATOR | SEPARATOR ;
 ID          : [a-zA-Z][a-zA-Z0-9_]* ;
 
 // Literales
-INTEGER     : [0-9]+ ;
+INTEGER     : [0-9]+ ('L'|'l')? ;
+FLOAT       : [0-9]+ '.' [0-9]* ('f'|'F'|'d'|'D')? | '.' [0-9]+ ('f'|'F'|'d'|'D')? | [0-9]+ ('f'|'F'|'d'|'D') ;
 STRING      : '"' (~["\r\n] | '\\"')* '"' ;
+CHAR        : '\'' (~['\r\n\\] | '\\' .) '\'' ;
 BOOLEAN     : 'true' | 'false' ;
+NULL        : 'null' ;
 
-// Palabras clave
-KEYWORD     :  'if' | 'else' | 'print' | 'while' | 'function' | 'return' ;
-//KEYWORD     : 'var' | 'if' | 'else' | 'print' | 'while' | 'function' | 'return' ;
+// Palabras clave básicas de Java
+KEYWORD     : 'class' | 'public' | 'private' | 'protected' | 'static' 
+            | 'void' | 'int' | 'boolean' | 'String' | 'char' | 'float' | 'double'
+            | 'if' | 'else' | 'for' | 'while' | 'do' | 'switch' | 'case' | 'break'
+            | 'return' | 'new' | 'this' | 'super' | 'import' | 'package' ;
 
-// Operadores
-OPERATOR    : '+' | '-' | '*' | '/' | '%' | '=' | '==' | '!=' | '<' | '>' | '<=' | '>=' | '&&' | '||' | '!' ;
+// Operadores de Java
+OPERATOR    : '+' | '-' | '*' | '/' | '%'                      // Aritméticos
+            | '=' | '+=' | '-=' | '*=' | '/=' | '%='           // Asignación
+            | '++' | '--'                                      // Incremento/Decremento
+            | '==' | '!=' | '<' | '>' | '<=' | '>='            // Comparación
+            | '&&' | '||' | '!'                                // Lógicos
+            | '&' | '|' | '^' | '~' | '<<' | '>>' | '>>>'      // Bit a bit
+            | '&=' | '|=' | '^=' | '<<=' | '>>=' | '>>>='      // Asignación bit a bit
+            | '?' | ':'                                        // Ternario
+            | 'instanceof'                                     // Tipo
+            ;
 
-// Separadores
-SEPARATOR   : ';' | '(' | ')' | '{' | '}' | ',' | '.' ;
+// Separadores de Java
+SEPARATOR   : ';' | '(' | ')' | '{' | '}' | '[' | ']' | ',' | '.' | '@' ;
 
 // Ignorar espacios en blanco y comentarios
 WS          : [ \t\r\n]+ -> skip ;

@@ -1,7 +1,3 @@
-// Este es un programa de ejemplo
-var x = 10;
-var mensaje = "Hola mundo!";
-
-if (x > 5) {
-    print mensaje;
+for (int i = 0; i < 3; i++) {
+    System.out.println(i * pi);
 }
