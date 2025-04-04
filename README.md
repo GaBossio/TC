@@ -212,7 +212,8 @@ mvn clean package
 📌 Luego, puedes ejecutar el **JAR generado** con:  
 
 ```bash
-java -jar target/demo-1.0-jar-with-dependencies.jar
+mvn package assembly:single
+java -jar target/demo-1.0-jar-with-dependencies.jar ejemplo.txt   
+java -jar target/demo-1.0-jar-with-dependencies.jar ejemplo_error.txt
 ```
-
 🔹 **Próximo paso:** Implementar el **análisis sintáctico y semántico** 🛠️✨  
