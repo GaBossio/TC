@@ -1,4 +1,4 @@
-javaCopiarpublic class EjemploCorrecto {
+public class EjemploCorrecto {
     public static void main(String[] args) {
         // Variables con diferentes tipos de datos
         int numero = 42;
