@@ -246,6 +246,165 @@ main            void       funcion         5          5          global
 ```
 
 ---
+# 📊 Tabla de Símbolos
+
+## 🔍 ¿Qué es la Tabla de Símbolos?
+
+La **Tabla de Símbolos** es una estructura de datos fundamental en nuestro compilador que almacena información sobre todos los identificadores (variables, funciones, parámetros) que aparecen en el programa fuente. Funciona como un diccionario que registra información esencial sobre cada símbolo para facilitar las fases de **análisis semántico** y **generación de código**.
+
+---
+
+## 🏗️ Estructura de la Tabla de Símbolos
+
+Nuestra implementación consta de los siguientes componentes:
+
+### 📌 Clase `Simbolo`
+
+Cada entrada en la tabla contiene:
+
+- **nombre**: Identificador del símbolo  
+- **tipo**: Tipo de dato (`int`, `char`, `double`, `void`)  
+- **categoría**: Clasificación del símbolo (`variable`, `funcion`, `parametro`)  
+- **línea y columna**: Posición en el código fuente donde se declaró  
+- **ámbito**: Contexto de visibilidad (`global` o nombre de la función)  
+- **parámetros**: Lista de tipos de parámetros (solo para funciones)  
+
+---
+
+## 🔄 Gestión de Ámbitos
+
+La tabla maneja dos niveles de ámbito:
+
+- **Ámbito global**: Accesible desde cualquier parte del programa  
+- **Ámbito local**: Específico de cada función, solo visible dentro de ella  
+
+---
+
+## 🛠️ Funcionalidades Principales
+
+La Tabla de Símbolos ofrece las siguientes operaciones:
+
+- **Agregar símbolos (`agregar`)**:  
+  Inserta nuevas entradas verificando duplicidad en el mismo ámbito
+
+- **Búsqueda de símbolos (`buscar`)**:
+  - Búsqueda en el ámbito actual
+  - Búsqueda en ámbito específico
+  - Búsqueda considerando la jerarquía de ámbitos (local → global)
+
+- **Gestión de ámbitos (`setAmbito`, `getAmbito`)**:  
+  Establecer y consultar el ámbito actual
+
+- **Visualización (`imprimir`)**:  
+  Mostrar el contenido completo de la tabla
+
+---
+
+## 📝 Ejemplo de Salida
+
+=== TABLA DE SÍMBOLOS === NOMBRE TIPO CATEGORÍA LÍNEA COLUMNA ÁMBITO PARÁMETROS
+a int parametro 1 13 suma b int parametro 1 20 suma suma int funcion 1 4 global [int, int] main void funcion 5 5 global resultado int variable 6 8 main
+
+yaml
+Copiar
+Editar
+
+---
+
+## 🧩 Importancia en el Proceso de Compilación
+
+La Tabla de Símbolos es crucial para:
+
+- **Verificación de tipos**: Comprobar que las operaciones sean compatibles con los tipos de datos  
+- **Control de ámbitos**: Gestionar la visibilidad y acceso a variables  
+- **Detección de errores semánticos**:
+  - Uso de variables no declaradas
+  - Redeclaración de identificadores
+  - Inconsistencias en el número o tipo de parámetros en llamadas a funciones
+
+- **Generación de código**:  
+  Proporciona información necesaria para la generación de código intermedio o código objeto
+
+---
+
+## 📈 Implementación Eficiente
+
+Nuestra implementación utiliza estructuras de datos optimizadas:
+
+- `ArrayList` para almacenar los símbolos  
+- Métodos de búsqueda considerando jerarquía de ámbitos  
+- Formato de visualización claro para depuración  
+
+# 🧠 Construcción de la Tabla mediante `SimbolosListener`
+
+La **Tabla de Símbolos** se construye durante el recorrido del árbol sintáctico a través de un **listener especializado**.
+
+---
+
+## 🔄 Clase `SimbolosListener`
+
+Esta clase extiende `MiLenguajeBaseListener` generado por ANTLR4 e implementa los siguientes métodos clave:
+
+### 📌 Gestión de funciones:
+
+- `enterDeclaracionFuncion`:  
+  Registra la función y sus parámetros, cambiando al ámbito de la función
+
+- `exitDeclaracionFuncion`:  
+  Restaura el ámbito global al salir de la función
+
+### 📌 Verificación de variables:
+
+- `enterExpVariable`:  
+  Comprueba que las variables utilizadas hayan sido declaradas previamente
+
+### 📌 Manejo de errores:
+
+- `visitErrorNode`:  
+  Captura errores sintácticos detectados durante el análisis
+
+> Se mantiene una **lista de errores semánticos** para informar al usuario.
+
+---
+
+## 📋 Proceso de Construcción
+
+Durante el recorrido del árbol, el listener:
+
+- Captura declaraciones de funciones y sus parámetros  
+- Registra variables locales y globales  
+- Verifica referencias a identificadores  
+- Detecta errores como:
+  - Redeclaración de funciones o variables
+  - Uso de variables no declaradas
+  - Parámetros duplicados
+
+---
+
+## 📊 Ejemplo de Código para Análisis Semántico
+
+```java
+// Crear el listener para tabla de símbolos
+SimbolosListener simbolosListener = new SimbolosListener();
+
+// Recorrer el árbol con el listener
+ParseTreeWalker walker = new ParseTreeWalker();
+walker.walk(simbolosListener, tree);
+
+// Obtener la tabla de símbolos construida
+TablaSimbolos tabla = simbolosListener.getTablaSimbolos();
+
+// Verificar si hay errores semánticos
+List<String> errores = simbolosListener.getErrores();
+if (!errores.isEmpty()) {
+    for (String error : errores) {
+        System.err.println(error);
+    }
+} else {
+    // Mostrar la tabla de símbolos
+    tabla.imprimir();
+}
+
 
 ## 🚀 ¡Hora de Compilar y Ejecutar!
 
