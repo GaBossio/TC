@@ -1,3 +1,4 @@
+com\compilador\App$2.class
 com\compilador\MiLenguajeParser$ExpEnteroContext.class
 com\compilador\MiLenguajeLexer.class
 com\compilador\MiLenguajeParser$BloqueContext.class
@@ -6,7 +7,9 @@ com\compilador\MiLenguajeParser$ParametrosContext.class
 com\compilador\MiLenguajeParser$ProgramaContext.class
 com\compilador\MiLenguajeParser$ExpNegacionContext.class
 com\compilador\MiLenguajeParser$ExpBinariaContext.class
+com\compilador\SimbolosListener.class
 com\compilador\MiLenguajeVisitor.class
+com\compilador\MiLenguajeBaseListener.class
 com\compilador\TablaSimbolos.class
 com\compilador\App$1.class
 com\compilador\MiLenguajeParser$OperadorBinarioContext.class
@@ -17,6 +20,7 @@ com\compilador\MiLenguajeParser$DeclaracionFuncionContext.class
 com\compilador\MiLenguajeParser$ExpVariableContext.class
 com\compilador\MiLenguajeParser$SentenciaContext.class
 com\compilador\App.class
+com\compilador\MiLenguajeListener.class
 com\compilador\MiLenguajeParser$SentenciaIfContext.class
 com\compilador\MiLenguajeParser$ExpresionContext.class
 com\compilador\MiLenguajeParser$RetornoContext.class
