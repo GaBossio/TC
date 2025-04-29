@@ -1,11 +1,14 @@
 grammar MiLenguaje;
 
-
-programa : (sentencia)* EOF ;
+programa
+    : (sentencia)* EOF
+    ;
 
 sentencia
     : sentenciaIf
     | declaracionFuncion
+    | declaracionVariable
+    | asignacion
     | retorno
     ;
 
@@ -29,12 +32,23 @@ parametro
     : tipo ID
     ;
 
+declaracionVariable
+    : tipo ID PYC
+    ;
+
+asignacion
+    : ID IGUAL expresion PYC
+    ;
+
 retorno
     : RETURN expresion? PYC
     ;
 
 tipo
-    : INT | CHAR | DOUBLE | VOID
+    : INT
+    | CHAR
+    | DOUBLE
+    | VOID
     ;
 
 expresion
@@ -45,6 +59,7 @@ expresion
     | INTEGER                                 #expEntero
     | DECIMAL                                 #expDecimal
     | CHARACTER                               #expCaracter
+    | ID PA argumentos? PC                    #expFuncion
     ;
 
 operadorBinario
@@ -52,8 +67,10 @@ operadorBinario
     | MAYOR | MAYOR_IGUAL | MENOR | MENOR_IGUAL | EQL | DISTINTO
     | AND | OR
     ;
-
-
+    
+argumentos
+    : expresion (COMA expresion)*
+    ;
 PA   : '(' ;
 PC   : ')' ;
 CA   : '[' ;

@@ -53,6 +53,18 @@ public interface MiLenguajeVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitParametro(MiLenguajeParser.ParametroContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link MiLenguajeParser#declaracionVariable}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclaracionVariable(MiLenguajeParser.DeclaracionVariableContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiLenguajeParser#asignacion}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAsignacion(MiLenguajeParser.AsignacionContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link MiLenguajeParser#retorno}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -114,9 +126,22 @@ public interface MiLenguajeVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpVariable(MiLenguajeParser.ExpVariableContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code expFuncion}
+	 * labeled alternative in {@link MiLenguajeParser#expresion}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitExpFuncion(MiLenguajeParser.ExpFuncionContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link MiLenguajeParser#operadorBinario}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitOperadorBinario(MiLenguajeParser.OperadorBinarioContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MiLenguajeParser#argumentos}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArgumentos(MiLenguajeParser.ArgumentosContext ctx);
 }

@@ -78,6 +78,26 @@ public interface MiLenguajeListener extends ParseTreeListener {
 	 */
 	void exitParametro(MiLenguajeParser.ParametroContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MiLenguajeParser#declaracionVariable}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclaracionVariable(MiLenguajeParser.DeclaracionVariableContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiLenguajeParser#declaracionVariable}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclaracionVariable(MiLenguajeParser.DeclaracionVariableContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiLenguajeParser#asignacion}.
+	 * @param ctx the parse tree
+	 */
+	void enterAsignacion(MiLenguajeParser.AsignacionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiLenguajeParser#asignacion}.
+	 * @param ctx the parse tree
+	 */
+	void exitAsignacion(MiLenguajeParser.AsignacionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MiLenguajeParser#retorno}.
 	 * @param ctx the parse tree
 	 */
@@ -182,6 +202,18 @@ public interface MiLenguajeListener extends ParseTreeListener {
 	 */
 	void exitExpVariable(MiLenguajeParser.ExpVariableContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code expFuncion}
+	 * labeled alternative in {@link MiLenguajeParser#expresion}.
+	 * @param ctx the parse tree
+	 */
+	void enterExpFuncion(MiLenguajeParser.ExpFuncionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code expFuncion}
+	 * labeled alternative in {@link MiLenguajeParser#expresion}.
+	 * @param ctx the parse tree
+	 */
+	void exitExpFuncion(MiLenguajeParser.ExpFuncionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MiLenguajeParser#operadorBinario}.
 	 * @param ctx the parse tree
 	 */
@@ -191,4 +223,14 @@ public interface MiLenguajeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitOperadorBinario(MiLenguajeParser.OperadorBinarioContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiLenguajeParser#argumentos}.
+	 * @param ctx the parse tree
+	 */
+	void enterArgumentos(MiLenguajeParser.ArgumentosContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiLenguajeParser#argumentos}.
+	 * @param ctx the parse tree
+	 */
+	void exitArgumentos(MiLenguajeParser.ArgumentosContext ctx);
 }
