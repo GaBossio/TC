@@ -55,7 +55,7 @@
                     <outputDirectory>${basedir}/src/main/java</outputDirectory>
                     <arguments>
                         <argument>-visitor</argument>
-                        <argument>-no-listener</argument>
+                        <argument>-listener</argument>
                     </arguments>
                 </configuration>
             </plugin>

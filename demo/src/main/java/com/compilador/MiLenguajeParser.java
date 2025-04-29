@@ -117,6 +117,14 @@ public class MiLenguajeParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_programa; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).enterPrograma(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).exitPrograma(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof MiLenguajeVisitor ) return ((MiLenguajeVisitor<? extends T>)visitor).visitPrograma(this);
 			else return visitor.visitChildren(this);
@@ -173,6 +181,14 @@ public class MiLenguajeParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_sentencia; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).enterSentencia(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).exitSentencia(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof MiLenguajeVisitor ) return ((MiLenguajeVisitor<? extends T>)visitor).visitSentencia(this);
@@ -245,6 +261,14 @@ public class MiLenguajeParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_sentenciaIf; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).enterSentenciaIf(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).exitSentenciaIf(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof MiLenguajeVisitor ) return ((MiLenguajeVisitor<? extends T>)visitor).visitSentenciaIf(this);
 			else return visitor.visitChildren(this);
@@ -306,6 +330,14 @@ public class MiLenguajeParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_bloque; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).enterBloque(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).exitBloque(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof MiLenguajeVisitor ) return ((MiLenguajeVisitor<? extends T>)visitor).visitBloque(this);
@@ -369,6 +401,14 @@ public class MiLenguajeParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_declaracionFuncion; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).enterDeclaracionFuncion(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).exitDeclaracionFuncion(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof MiLenguajeVisitor ) return ((MiLenguajeVisitor<? extends T>)visitor).visitDeclaracionFuncion(this);
 			else return visitor.visitChildren(this);
@@ -431,6 +471,14 @@ public class MiLenguajeParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_parametros; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).enterParametros(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).exitParametros(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof MiLenguajeVisitor ) return ((MiLenguajeVisitor<? extends T>)visitor).visitParametros(this);
 			else return visitor.visitChildren(this);
@@ -485,6 +533,14 @@ public class MiLenguajeParser extends Parser {
 		}
 		@Override public int getRuleIndex() { return RULE_parametro; }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).enterParametro(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).exitParametro(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof MiLenguajeVisitor ) return ((MiLenguajeVisitor<? extends T>)visitor).visitParametro(this);
 			else return visitor.visitChildren(this);
@@ -524,6 +580,14 @@ public class MiLenguajeParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_retorno; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).enterRetorno(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).exitRetorno(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof MiLenguajeVisitor ) return ((MiLenguajeVisitor<? extends T>)visitor).visitRetorno(this);
@@ -574,6 +638,14 @@ public class MiLenguajeParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_tipo; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).enterTipo(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).exitTipo(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof MiLenguajeVisitor ) return ((MiLenguajeVisitor<? extends T>)visitor).visitTipo(this);
@@ -629,6 +701,14 @@ public class MiLenguajeParser extends Parser {
 		}
 		public ExpNegacionContext(ExpresionContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).enterExpNegacion(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).exitExpNegacion(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof MiLenguajeVisitor ) return ((MiLenguajeVisitor<? extends T>)visitor).visitExpNegacion(this);
 			else return visitor.visitChildren(this);
@@ -637,6 +717,14 @@ public class MiLenguajeParser extends Parser {
 	public static class ExpDecimalContext extends ExpresionContext {
 		public TerminalNode DECIMAL() { return getToken(MiLenguajeParser.DECIMAL, 0); }
 		public ExpDecimalContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).enterExpDecimal(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).exitExpDecimal(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof MiLenguajeVisitor ) return ((MiLenguajeVisitor<? extends T>)visitor).visitExpDecimal(this);
@@ -655,6 +743,14 @@ public class MiLenguajeParser extends Parser {
 		}
 		public ExpBinariaContext(ExpresionContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).enterExpBinaria(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).exitExpBinaria(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof MiLenguajeVisitor ) return ((MiLenguajeVisitor<? extends T>)visitor).visitExpBinaria(this);
 			else return visitor.visitChildren(this);
@@ -668,6 +764,14 @@ public class MiLenguajeParser extends Parser {
 		public TerminalNode PC() { return getToken(MiLenguajeParser.PC, 0); }
 		public ExpParentizadaContext(ExpresionContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).enterExpParentizada(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).exitExpParentizada(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof MiLenguajeVisitor ) return ((MiLenguajeVisitor<? extends T>)visitor).visitExpParentizada(this);
 			else return visitor.visitChildren(this);
@@ -676,6 +780,14 @@ public class MiLenguajeParser extends Parser {
 	public static class ExpCaracterContext extends ExpresionContext {
 		public TerminalNode CHARACTER() { return getToken(MiLenguajeParser.CHARACTER, 0); }
 		public ExpCaracterContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).enterExpCaracter(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).exitExpCaracter(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof MiLenguajeVisitor ) return ((MiLenguajeVisitor<? extends T>)visitor).visitExpCaracter(this);
@@ -686,6 +798,14 @@ public class MiLenguajeParser extends Parser {
 		public TerminalNode INTEGER() { return getToken(MiLenguajeParser.INTEGER, 0); }
 		public ExpEnteroContext(ExpresionContext ctx) { copyFrom(ctx); }
 		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).enterExpEntero(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).exitExpEntero(this);
+		}
+		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof MiLenguajeVisitor ) return ((MiLenguajeVisitor<? extends T>)visitor).visitExpEntero(this);
 			else return visitor.visitChildren(this);
@@ -694,6 +814,14 @@ public class MiLenguajeParser extends Parser {
 	public static class ExpVariableContext extends ExpresionContext {
 		public TerminalNode ID() { return getToken(MiLenguajeParser.ID, 0); }
 		public ExpVariableContext(ExpresionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).enterExpVariable(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).exitExpVariable(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof MiLenguajeVisitor ) return ((MiLenguajeVisitor<? extends T>)visitor).visitExpVariable(this);
@@ -839,6 +967,14 @@ public class MiLenguajeParser extends Parser {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_operadorBinario; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).enterOperadorBinario(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof MiLenguajeListener ) ((MiLenguajeListener)listener).exitOperadorBinario(this);
+		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof MiLenguajeVisitor ) return ((MiLenguajeVisitor<? extends T>)visitor).visitOperadorBinario(this);
