@@ -1,17 +1,59 @@
 grammar MiLenguaje;
 
-// Regla parser mínima (requerida por ANTLR)
-programa : (token)* EOF ;
-token : PA | PC | CA | CC | LA | LC | PYC | COMA | IGUAL | MAYOR | MAYOR_IGUAL 
-      | MENOR | MENOR_IGUAL | EQL | DISTINTO | SUM | RES | MUL | DIV | MOD
-      | OR | AND | NOT | FOR | WHILE | IF | ELSE | INT | CHAR | DOUBLE | VOID
-      | RETURN | ID | INTEGER | DECIMAL | CHARACTER | OTRO 
-      ;
 
-fragment LETRA : [A-Za-z];
-fragment DIGITO : [0-9];
+programa : (sentencia)* EOF ;
 
-// TOKENS 
+sentencia
+    : sentenciaIf
+    | declaracionFuncion
+    | retorno
+    ;
+
+sentenciaIf
+    : IF PA expresion PC bloque (ELSE bloque)?
+    ;
+
+bloque
+    : LA (sentencia)* LC
+    ;
+
+declaracionFuncion
+    : tipo ID PA parametros? PC bloque
+    ;
+
+parametros
+    : parametro (COMA parametro)*
+    ;
+
+parametro
+    : tipo ID
+    ;
+
+retorno
+    : RETURN expresion? PYC
+    ;
+
+tipo
+    : INT | CHAR | DOUBLE | VOID
+    ;
+
+expresion
+    : expresion operadorBinario expresion     #expBinaria
+    | NOT expresion                           #expNegacion
+    | PA expresion PC                         #expParentizada
+    | ID                                      #expVariable
+    | INTEGER                                 #expEntero
+    | DECIMAL                                 #expDecimal
+    | CHARACTER                               #expCaracter
+    ;
+
+operadorBinario
+    : SUM | RES | MUL | DIV | MOD
+    | MAYOR | MAYOR_IGUAL | MENOR | MENOR_IGUAL | EQL | DISTINTO
+    | AND | OR
+    ;
+
+
 PA   : '(' ;
 PC   : ')' ;
 CA   : '[' ;
@@ -25,11 +67,11 @@ COMA : ',' ;
 IGUAL : '=' ;
 
 MAYOR  : '>' ;
-MAYOR_IGUAL: '>=';
+MAYOR_IGUAL: '>=' ;
 MENOR  : '<' ;
-MENOR_IGUAL: '<=';
-EQL  : '==';
-DISTINTO  : '!=';
+MENOR_IGUAL: '<=' ;
+EQL  : '==' ;
+DISTINTO  : '!=' ;
 
 SUM  : '+' ;
 RES  : '-' ;
@@ -41,31 +83,30 @@ OR   : '||' ;
 AND  : '&&' ;
 NOT  : '!'  ;
 
-FOR  : 'for';
-WHILE: 'while';
+FOR   : 'for' ;
+WHILE : 'while' ;
 
-IF   : 'if' ;
-ELSE : 'else' ;
+IF    : 'if' ;
+ELSE  : 'else' ;
 
 INT     : 'int' ;
 CHAR    : 'char' ;
 DOUBLE  : 'double' ;
 VOID    : 'void' ;
 
-RETURN : 'return';
+RETURN : 'return' ;
 
-ID : (LETRA | '_') (LETRA | DIGITO | '_')*;
+ID : (LETRA | '_') (LETRA | DIGITO | '_')* ;
+INTEGER : DIGITO+ ;
+DECIMAL : INTEGER '.' INTEGER ;
+CHARACTER : '\'' (~['\r\n] | '\\' .) '\'' ;
 
-INTEGER : DIGITO+;
-DECIMAL : INTEGER'.'INTEGER;
-CHARACTER: '\'' (~['\r\n] | '\\' .) '\'' ;
+COMENTARIO_LINEA : '//' ~[\r\n]* -> skip ;
+COMENTARIO_BLOQUE : '/*' .*? '*/' -> skip ;
 
-// Comentarios - Se ignoran durante el análisis
-//COMENTARIO_LINEA : '//' ~[\r\n]*; sin ocultar
-COMENTARIO_LINEA : '//' ~[\r\n]* -> skip;
-COMENTARIO_BLOQUE : '/*' .*? '*/' -> skip;
-
-
-HOLA_MUNDO :  '"Hola, mundo!"';
 WS : [ \r\n\t] -> skip ;
+
 OTRO : . ;
+
+fragment LETRA : [A-Za-z] ;
+fragment DIGITO : [0-9] ;

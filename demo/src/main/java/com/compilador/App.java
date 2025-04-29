@@ -86,6 +86,6 @@ public class App {
         } catch (Exception e) {
             System.err.println("❌ Error inesperado: " + e.getMessage());
             e.printStackTrace();
-        }
+        } 
     }
 }
