@@ -6,24 +6,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Listener para construir la tabla de símbolos durante el análisis del AST
+ * Listener mejorado para construir la tabla de símbolos y realizar verificación de tipos
  */
-
- /*
-    Verifica que las funciones no void tengan al menos una sentencia return
-    Comprueba que las asignaciones sean a variables (no a funciones)
-    Verifica el número de argumentos en llamadas a funciones
-    Comprueba la compatibilidad en sentencias return
-    Incluye un método básico para determinar el tipo de las expresiones
-  */
 public class SimbolosListener extends MiLenguajeBaseListener {
     
     private TablaSimbolos tablaSimbolos;
     private List<String> errores;
+    private String tipoRetornoActual; // Para verificar return
     
     public SimbolosListener() {
         this.tablaSimbolos = new TablaSimbolos();
         this.errores = new ArrayList<>();
+        this.tipoRetornoActual = null;
     }
     
     /**
@@ -89,6 +83,9 @@ public class SimbolosListener extends MiLenguajeBaseListener {
         
         // Cambiar el ámbito actual
         tablaSimbolos.setAmbito(nombre);
+        
+        // Guardar el tipo de retorno para verificar las sentencias return
+        tipoRetornoActual = tipo;
     }
     
     /**
@@ -96,21 +93,155 @@ public class SimbolosListener extends MiLenguajeBaseListener {
      */
     @Override
     public void exitDeclaracionFuncion(MiLenguajeParser.DeclaracionFuncionContext ctx) {
-        // Restaurar el ámbito global
+        // Verificar si la función no void tiene al menos un return
+        String tipo = ctx.tipo().getText();
+        String nombre = ctx.ID().getText();
+        
+        if (!tipo.equals("void")) {
+            // Podríamos hacer un análisis más profundo para garantizar que todos los caminos tienen return
+            // pero eso requeriría un análisis de flujo de control más complejo
+            boolean tieneReturn = false;
+            
+            for (int i = 0; i < ctx.bloque().sentencia().size(); i++) {
+                if (ctx.bloque().sentencia(i).retorno() != null) {
+                    tieneReturn = true;
+                    break;
+                }
+            }
+            
+            if (!tieneReturn) {
+                errores.add("Error semántico en función '" + nombre + "': Función con tipo de retorno '" + 
+                          tipo + "' debe tener al menos una sentencia return");
+            }
+        }
+        
+        // Restaurar el ámbito global y el tipo de retorno
         tablaSimbolos.setAmbito("global");
+        tipoRetornoActual = null;
     }
     
     /**
-     * Cuando se encuentra una referencia a una variable
+     * Cuando se encuentra una declaración de variable
+     */
+    @Override
+    public void enterDeclaracionVariable(MiLenguajeParser.DeclaracionVariableContext ctx) {
+        String nombre = ctx.ID().getText();
+        String tipo = ctx.tipo().getText();
+        int linea = ctx.ID().getSymbol().getLine();
+        int columna = ctx.ID().getSymbol().getCharPositionInLine();
+        
+        // Crear y agregar el símbolo
+        TablaSimbolos.Simbolo simbolo = new TablaSimbolos.Simbolo(
+            nombre, tipo, "variable", linea, columna, tablaSimbolos.getAmbito()
+        );
+        
+        if (!tablaSimbolos.agregar(simbolo)) {
+            errores.add("Error semántico en línea " + linea + 
+                      ": Variable '" + nombre + "' ya declarada en este ámbito");
+        }
+    }
+    
+    /**
+     * Cuando se encuentra una asignación
+     */
+    @Override
+    public void enterAsignacion(MiLenguajeParser.AsignacionContext ctx) {
+        String nombre = ctx.ID().getText();
+        int linea = ctx.ID().getSymbol().getLine();
+        
+        // Verificar si la variable existe
+        TablaSimbolos.Simbolo simbolo = tablaSimbolos.buscar(nombre);
+        if (simbolo == null) {
+            errores.add("Error semántico en línea " + linea + 
+                      ": Variable '" + nombre + "' no declarada");
+            return;
+        }
+        
+        // Verificación de categoría (solo variables pueden ser asignadas, no funciones)
+        if (!simbolo.getCategoria().equals("variable") && !simbolo.getCategoria().equals("parametro")) {
+            errores.add("Error semántico en línea " + linea + 
+                      ": No se puede asignar valor a '" + nombre + "' porque no es una variable");
+            return;
+        }
+        
+        // La verificación de tipos de la expresión se hará cuando implementemos type checking
+    }
+    
+    /**
+     * Cuando se encuentra una expresión de variable
      */
     @Override
     public void enterExpVariable(MiLenguajeParser.ExpVariableContext ctx) {
         String nombre = ctx.ID().getText();
-        TablaSimbolos.Simbolo simbolo = tablaSimbolos.buscar(nombre);
+        int linea = ctx.ID().getSymbol().getLine();
         
+        TablaSimbolos.Simbolo simbolo = tablaSimbolos.buscar(nombre);
         if (simbolo == null) {
-            errores.add("Error semántico en línea " + ctx.ID().getSymbol().getLine() + 
-                      ": Variable o función '" + nombre + "' no declarada");
+            errores.add("Error semántico en línea " + linea + 
+                      ": Identificador '" + nombre + "' no declarado");
+        }
+    }
+    
+    /**
+     * Cuando se encuentra una llamada a función
+     */
+    @Override
+    public void enterExpFuncion(MiLenguajeParser.ExpFuncionContext ctx) {
+        String nombre = ctx.ID().getText();
+        int linea = ctx.ID().getSymbol().getLine();
+        
+        // Verificar si la función existe
+        TablaSimbolos.Simbolo simbolo = tablaSimbolos.buscar(nombre);
+        if (simbolo == null) {
+            errores.add("Error semántico en línea " + linea + 
+                      ": Función '" + nombre + "' no declarada");
+            return;
+        }
+        
+        // Verificar que sea una función
+        if (!simbolo.getCategoria().equals("funcion")) {
+            errores.add("Error semántico en línea " + linea + 
+                      ": '" + nombre + "' no es una función");
+            return;
+        }
+        
+        // Verificar número de argumentos
+        int numArgumentosEsperados = simbolo.getParametros().size();
+        int numArgumentosRecibidos = ctx.argumentos() == null ? 0 : ctx.argumentos().expresion().size();
+        
+        if (numArgumentosEsperados != numArgumentosRecibidos) {
+            errores.add("Error semántico en línea " + linea + 
+                      ": Función '" + nombre + "' espera " + numArgumentosEsperados + 
+                      " argumentos, pero recibió " + numArgumentosRecibidos);
+        }
+        
+        // Para una verificación completa de tipos, necesitaríamos determinar el tipo de cada expresión
+    }
+    
+    /**
+     * Cuando se encuentra una sentencia return
+     */
+    @Override
+    public void enterRetorno(MiLenguajeParser.RetornoContext ctx) {
+        if (tipoRetornoActual == null) {
+            errores.add("Error semántico en línea " + ctx.getStart().getLine() + 
+                      ": Sentencia return fuera de una función");
+            return;
+        }
+        
+        // Verificar compatibilidad del tipo de retorno
+        if (tipoRetornoActual.equals("void")) {
+            if (ctx.expresion() != null) {
+                errores.add("Error semántico en línea " + ctx.getStart().getLine() + 
+                          ": Función void no debe retornar un valor");
+            }
+        } else {
+            if (ctx.expresion() == null) {
+                errores.add("Error semántico en línea " + ctx.getStart().getLine() + 
+                          ": Función con tipo de retorno '" + tipoRetornoActual + 
+                          "' debe retornar un valor");
+            }
+            // Una verificación completa requeriría determinar el tipo de la expresión
         }
     }
     
@@ -120,5 +251,34 @@ public class SimbolosListener extends MiLenguajeBaseListener {
     @Override
     public void visitErrorNode(ErrorNode node) {
         errores.add("Error sintáctico en token: " + node.getText());
+    }
+    
+    /**
+     * Método para determinar el tipo de una expresión (implementación básica)
+     * Una implementación completa requeriría más lógica para evaluar expresiones complejas
+     */
+    private String getTipoExpresion(MiLenguajeParser.ExpresionContext ctx) {
+        if (ctx instanceof MiLenguajeParser.ExpVariableContext) {
+            MiLenguajeParser.ExpVariableContext expVar = (MiLenguajeParser.ExpVariableContext) ctx;
+            TablaSimbolos.Simbolo simbolo = tablaSimbolos.buscar(expVar.ID().getText());
+            return simbolo != null ? simbolo.getTipo() : "desconocido";
+        } 
+        else if (ctx instanceof MiLenguajeParser.ExpEnteroContext) {
+            return "int";
+        } 
+        else if (ctx instanceof MiLenguajeParser.ExpDecimalContext) {
+            return "double";
+        } 
+        else if (ctx instanceof MiLenguajeParser.ExpCaracterContext) {
+            return "char";
+        } 
+        else if (ctx instanceof MiLenguajeParser.ExpFuncionContext) {
+            MiLenguajeParser.ExpFuncionContext expFunc = (MiLenguajeParser.ExpFuncionContext) ctx;
+            TablaSimbolos.Simbolo simbolo = tablaSimbolos.buscar(expFunc.ID().getText());
+            return simbolo != null ? simbolo.getTipo() : "desconocido";
+        }
+        
+        // Para otros tipos de expresiones, necesitarías reglas más complejas
+        return "desconocido";
     }
 }
