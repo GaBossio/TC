@@ -8,6 +8,14 @@ import java.util.List;
 /**
  * Listener para construir la tabla de símbolos durante el análisis del AST
  */
+
+ /*
+    Verifica que las funciones no void tengan al menos una sentencia return
+    Comprueba que las asignaciones sean a variables (no a funciones)
+    Verifica el número de argumentos en llamadas a funciones
+    Comprueba la compatibilidad en sentencias return
+    Incluye un método básico para determinar el tipo de las expresiones
+  */
 public class SimbolosListener extends MiLenguajeBaseListener {
     
     private TablaSimbolos tablaSimbolos;
