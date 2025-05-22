@@ -24,7 +24,7 @@
             "request": "launch",
             "input": "${workspaceFolder}/demo/src/main/input/input.txt",
             "grammar": "${workspaceFolder}/demo/src/main/antlr4/com/compilador/MiLenguaje.g4",
-            "startRule": "program",
+            "startRule": "s",
             "printParseTree": true,
             "visualParseTree": true
         }
