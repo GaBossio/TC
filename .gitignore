@@ -1,0 +1,10 @@
+# Ignora todo recursivamente
+pom.xml
+# Ignora el directorio de compilación
+target/
+# Ignora el directorio de dependencias
+.mvn/
+# Ignora el directorio de configuración de Maven
+.settings/
+# Ignora el directorio de plugins de Maven
+.idea/
