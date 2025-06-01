@@ -1,5 +1,6 @@
 grammar MiLenguaje;
 
+//Test
 // Reglas del parser (simplificadas)
 program : token* EOF ;
 token   : ID | HEX | INTEGER | STRING | KEYWORD | OPERATOR | SEPARATOR ;
