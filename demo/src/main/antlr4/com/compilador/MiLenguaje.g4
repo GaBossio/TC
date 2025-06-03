@@ -12,9 +12,64 @@ libreria
     | COMILLA ID (PUNTO ID)* COMILLA
     ;
 
+
+
+listaParametros
+    : parametro (COMA parametro)*
+    ;
+
+parametro
+    : tipo ID
+    ;
+
+bloque
+    : LLAVE_IZQ (declaracion | instruccion)* LLAVE_DER
+    ;
+
+instrucciones
+    : instruccion*
+    ;
+
+instruccion
+    : declaracion
+    | bucles
+    ;
+
+bucles
+    : whileLoop
+    | forLoop
+    ;
+
+whileLoop
+    : 'while' PAREN_IZQ expresion PAREN_DER bloque
+    ;
+
+forLoop
+    : 'for' PAREN_IZQ declaracionVariable? PUNTOYCOMA expresion? PUNTOYCOMA expresion? PAREN_DER bloque
+    ;
+
+expresion
+    : ID
+    | literal
+    | expresion operadorAritmetico expresion
+    | PAREN_IZQ expresion PAREN_DER
+    ;
+
+
 declaracion
     : declaracionVariable
-//    | declaracionFuncion
+    | declaracionFuncion
+    ;
+
+declaracionFuncion
+    : tipo ID
+      PAREN_IZQ
+        ( listaParametros
+        | VOID
+        |
+        )
+      PAREN_DER
+      bloque
     ;
 
 declaracionVariable
@@ -41,6 +96,15 @@ literal
     | FALSE
     ;
 
+operadorAritmetico
+: IGUAL_IGUAL
+| MAYOR_IGUAL
+| MAYOR
+| MENOR_IGUAL
+| MENOR
+| DIFERENTE;
+
+
 // Regalas Léxicas (lexer)
 // -----------------------------------------------------------------------------
 
@@ -65,7 +129,12 @@ FALSE   : 'false' ;
 
 
 // Palabras reservadas
-KEYWORD     : 'var' | 'if' | 'else' | 'print' | 'while' | 'function' | 'return' ;
+RETURN      : 'return' ;
+SI          : 'if' ;
+SINO        : 'else' ;
+IMPRIMIR    : 'print' ;
+WHILE       : 'while' ;
+FOR         : 'for' ;
 INCLUIR     : '#include' ;
 
 // Operadores compuestos de asignación
