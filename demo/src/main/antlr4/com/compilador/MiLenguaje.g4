@@ -1,7 +1,7 @@
 grammar MiLenguaje;
 
-// Reglas del parser (simplificadas)
-program : incluide* EOF ;
+// Reglas del parser
+program : (incluide | declaracion)* EOF ;
 
 incluide
     : INCLUIR libreria PUNTOYCOMA?
@@ -12,19 +12,57 @@ libreria
     | COMILLA ID (PUNTO ID)* COMILLA
     ;
 
-// Lexer rules (reglas léxicas)
-// Identificadores
-ID          : [a-zA-Z][a-zA-Z0-9_]* ;
+declaracion
+    : declaracionVariable
+//    | declaracionFuncion
+    ;
+
+declaracionVariable
+    : tipo ID ASIGNAR literal PUNTOYCOMA
+    ;
+
+tipo
+    : INT
+    | FLOAT
+    | VOID
+    | CHAR
+    | DOUBLE
+    | STRING
+    | BOOL
+    ;
+
+literal
+    : INT_LIT
+    | FLOAT_LIT
+    | CHAR_LIT
+    | DOUBLE_LIT
+    | STRING_LIT
+    | TRUE
+    | FALSE
+    ;
+
+// Regalas Léxicas (lexer)
+// -----------------------------------------------------------------------------
+
+// Tipos de datos
+INT     : 'int' ;
+FLOAT   : 'float' ;
+VOID    : 'void' ;
+CHAR    : 'char' ;
+DOUBLE  : 'double' ;
+STRING  : 'string' ;
+BOOL    : 'bool' ;
 
 // Literales
-HEX         : '0' [xX] [0-9a-fA-F]+ ;           //Se coloca aca para que no se confunda con un Integer,
-                                                //ya que el lexer lee primero los tokens
-                                                //y luego los pasa al parser
-                                                //si no se coloca aca, el lexer lo leeria como un Integer
-                                                //y fallaria al parsear el siguiente token
-INTEGER     : [0-9]+ ;
-STRING      : '"' (~["\r\n] | '\\"')* '"' ;
-BOOLEAN     : 'true' | 'false' ;
+INT_LIT   : [0-9]+ ;
+FLOAT_LIT : [0-9]+ '.' [0-9]* | '.' [0-9]+ ;
+CHAR_LIT  : '\'' (~['\\\r\n] | '\\' .) '\'' ;
+DOUBLE_LIT : [0-9]+ '.' [0-9]* | '.' [0-9]+ ;
+STRING_LIT : '"' (~["\\\r\n] | '\\' .)* '"' ;
+// Booleanos
+TRUE    : 'true' ;
+FALSE   : 'false' ;
+
 
 // Palabras reservadas
 KEYWORD     : 'var' | 'if' | 'else' | 'print' | 'while' | 'function' | 'return' ;
@@ -74,6 +112,9 @@ LLAVE_IZQ        : '{' ;
 LLAVE_DER        : '}' ;
 PUNTOYCOMA       : ';' ;
 COMA             : ',' ;
+
+// Identificadores
+ID          : [a-zA-Z][a-zA-Z0-9_]* ;
 
 // Ignorar espacios en blanco y comentarios
 WS          : [ \t\r\n]+ -> skip ;

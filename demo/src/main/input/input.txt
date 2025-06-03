@@ -1,2 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
+
+int entero = 42;
+char caracter = 'A';
+double decimal = 3.14159;
+bool flag = true;
