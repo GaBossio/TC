@@ -1,7 +1,13 @@
 grammar MiLenguaje;
 
 // Reglas del parser
-program : (incluide | declaracion)* EOF ;
+program : elemento* EOF ;
+
+elemento
+    : incluide
+    | declaracion
+    | instruccion
+    ;
 
 incluide
     : INCLUIR libreria PUNTOYCOMA?
@@ -12,8 +18,6 @@ libreria
     | COMILLA ID (PUNTO ID)* COMILLA
     ;
 
-
-
 listaParametros
     : parametro (COMA parametro)*
     ;
@@ -23,16 +27,45 @@ parametro
     ;
 
 bloque
-    : LLAVE_IZQ (declaracion | instruccion)* LLAVE_DER
+    : LLAVE_IZQ declaracionOInstruccion* LLAVE_DER
     ;
 
-instrucciones
-    : instruccion*
+declaracionOInstruccion
+    : declaracionVariable
+    | instruccionSimple
+    ;
+
+instruccionSimple
+    : bucles
+    | asignacion
+    | asignacionCompuesta
+    | sentenciaRetorno
+    | sentenciaBreak
+    | sentenciaContinue
+    | sentenciaExpr
+    | sentenciaIf
     ;
 
 instruccion
-    : declaracion
-    | bucles
+    : instruccionSimple
+    | declaracionVariable
+    ;
+
+// Nueva regla para asignaciones
+asignacion
+    : ID ASIGNAR expresion PUNTOYCOMA
+    ;
+
+// Nueva regla para asignaciones compuestas y operadores unarios
+asignacionCompuesta
+    : ID (MASIGUAL | MENOSIGUAL | ASTERISCOIGUAL | BARRAIGUAL | PORCENTAJEIGUAL) expresion PUNTOYCOMA
+    | ID (INCREMENTO | DECREMENTO) PUNTOYCOMA
+    | (INCREMENTO | DECREMENTO) ID PUNTOYCOMA
+    ;
+
+// Nueva regla para if statements
+sentenciaIf
+    : SI PAREN_IZQ expresion PAREN_DER bloque (SINO bloque)?
     ;
 
 bucles
@@ -41,20 +74,57 @@ bucles
     ;
 
 whileLoop
-    : 'while' PAREN_IZQ expresion PAREN_DER bloque
+    : WHILE PAREN_IZQ expresion PAREN_DER bloque
     ;
 
 forLoop
-    : 'for' PAREN_IZQ declaracionVariable? PUNTOYCOMA expresion? PUNTOYCOMA expresion? PAREN_DER bloque
+    : FOR PAREN_IZQ forInit? PUNTOYCOMA expresion? PUNTOYCOMA forUpdate? PAREN_DER bloque
+    ;
+
+forInit
+    : declaracionVariable
+    | asignacion
+    ;
+
+forUpdate
+    : expresion
+    | asignacionCompuesta
     ;
 
 expresion
-    : ID
-    | literal
-    | expresion operadorAritmetico expresion
-    | PAREN_IZQ expresion PAREN_DER
+    : expresionLogica
     ;
 
+expresionLogica
+    : expresionComparacion (operadorLogico expresionComparacion)*
+    ;
+
+expresionComparacion
+    : expresionAritmetica (operadorComparacion expresionAritmetica)*
+    ;
+
+expresionAritmetica
+    : expresionUnaria (operadorAritmetico expresionUnaria)*
+    ;
+
+expresionUnaria
+    : NO_LOGICO expresionUnaria
+    | MENOS expresionUnaria
+    | MAS expresionUnaria
+    | INCREMENTO expresionPrimaria
+    | DECREMENTO expresionPrimaria
+    | expresionPostfijo
+    ;
+
+expresionPostfijo
+    : expresionPrimaria (INCREMENTO | DECREMENTO)?
+    ;
+
+expresionPrimaria
+    : ID
+    | literal
+    | PAREN_IZQ expresion PAREN_DER
+    ;
 
 declaracion
     : declaracionVariable
@@ -62,18 +132,27 @@ declaracion
     ;
 
 declaracionFuncion
-    : tipo ID
-      PAREN_IZQ
-        ( listaParametros
-        | VOID
-        |
-        )
-      PAREN_DER
-      bloque
+    : tipo ID PAREN_IZQ listaParametros? PAREN_DER bloque
     ;
 
 declaracionVariable
-    : tipo ID ASIGNAR literal PUNTOYCOMA
+    : tipo ID (ASIGNAR expresion)? PUNTOYCOMA
+    ;
+
+sentenciaRetorno
+    : RETURN expresion? PUNTOYCOMA
+    ;
+
+sentenciaBreak
+    : BREAK PUNTOYCOMA
+    ;
+
+sentenciaContinue
+    : CONTINUAR PUNTOYCOMA
+    ;
+
+sentenciaExpr
+    : expresion PUNTOYCOMA
     ;
 
 tipo
@@ -96,16 +175,31 @@ literal
     | FALSE
     ;
 
+// Separados los operadores aritméticos de los de comparación
 operadorAritmetico
-: IGUAL_IGUAL
-| MAYOR_IGUAL
-| MAYOR
-| MENOR_IGUAL
-| MENOR
-| DIFERENTE;
+    : MAS
+    | MENOS
+    | ASTERISCO
+    | BARRA
+    | PORCENTAJE
+    ;
 
+operadorComparacion
+    : IGUAL_IGUAL
+    | DIFERENTE
+    | MAYOR_IGUAL
+    | MENOR_IGUAL
+    | MAYOR
+    | MENOR
+    ;
 
-// Regalas Léxicas (lexer)
+// Operadores lógicos
+operadorLogico
+    : Y_LOGICO
+    | O_LOGICO
+    ;
+
+// Reglas Léxicas (lexer)
 // -----------------------------------------------------------------------------
 
 // Tipos de datos
@@ -123,13 +217,15 @@ FLOAT_LIT : [0-9]+ '.' [0-9]* | '.' [0-9]+ ;
 CHAR_LIT  : '\'' (~['\\\r\n] | '\\' .) '\'' ;
 DOUBLE_LIT : [0-9]+ '.' [0-9]* | '.' [0-9]+ ;
 STRING_LIT : '"' (~["\\\r\n] | '\\' .)* '"' ;
+
 // Booleanos
 TRUE    : 'true' ;
 FALSE   : 'false' ;
 
-
 // Palabras reservadas
 RETURN      : 'return' ;
+BREAK       : 'break' ;
+CONTINUAR   : 'continue' ;
 SI          : 'if' ;
 SINO        : 'else' ;
 IMPRIMIR    : 'print' ;
@@ -160,6 +256,7 @@ MAS              : '+' ;
 MENOS            : '-' ;
 ASTERISCO        : '*' ;
 BARRA            : '/' ;
+BARRA_DOBLE      : '\\' ;
 PORCENTAJE       : '%' ;
 
 IGUAL_IGUAL      : '==' ;
@@ -183,7 +280,7 @@ PUNTOYCOMA       : ';' ;
 COMA             : ',' ;
 
 // Identificadores
-ID          : [a-zA-Z][a-zA-Z0-9_]* ;
+ID          : [a-zA-Z_][a-zA-Z0-9_]* ;
 
 // Ignorar espacios en blanco y comentarios
 WS          : [ \t\r\n]+ -> skip ;
