@@ -6,7 +6,6 @@ program : elemento* EOF ;
 elemento
     : incluide
     | declaracion
-    | instruccion
     ;
 
 incluide
@@ -48,7 +47,6 @@ instruccionSimple
 
 instruccion
     : instruccionSimple
-    | declaracionVariable
     ;
 
 // Nueva regla para asignaciones
@@ -78,7 +76,7 @@ whileLoop
     ;
 
 forLoop
-    : FOR PAREN_IZQ forInit? PUNTOYCOMA expresion? PUNTOYCOMA forUpdate? PAREN_DER bloque
+    : FOR PAREN_IZQ forInit? expresion? PUNTOYCOMA forUpdate? PAREN_DER bloque
     ;
 
 forInit
