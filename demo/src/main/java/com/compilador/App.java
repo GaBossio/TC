@@ -27,7 +27,7 @@ public class App {
 
         // 3. Sintaxis
         MiLenguajeParser parser = new MiLenguajeParser(tokens);
-        ParseTree tree = parser.program();
+        ParseTree tree = parser.program();    
 
         // 4. Mostrar AST
         System.out.println("\n=== ÁRBOL Sintáctico (texto) ===");
@@ -42,14 +42,9 @@ public class App {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        // 5. Generación de código intermedio
+        // 5. Código intermedio
         CodigoVisitor visitor = new CodigoVisitor();
         visitor.visit(tree);
         List<String> codigo3Dir = visitor.getGen().getInstrucciones();
-
-        System.out.println("\n=== Código Intermedio (3 direcciones) ===");
-        for (int i = 0; i < codigo3Dir.size(); i++) {
-            System.out.printf("%3d: %s%n", i, codigo3Dir.get(i));
-        }
     }
 }

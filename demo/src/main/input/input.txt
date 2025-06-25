@@ -1,40 +1,29 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-// ----------------------------------------------
-// 1. Declaración de variables y tipos básicos
-// ----------------------------------------------
-void pruebaTipos() {
-    int entero = 42;
-    char caracter = 'A';
-    double decimal = 3.14159;
-    bool bandera = true;
+void test()
+{
+    int x;
+    x = 8;
+    int y = 2;
+    
 
-    // Asignaciones posteriores
-    entero = entero + 8;         // entero ahora es 50
-    caracter = caracter + 1;     // caracter ahora es 'B'
-    decimal = entero * 1.5;      // decimal ahora es 75.0
-    bandera = (entero > 100);    // bandera ahora es false
-}
-
-void pruebaBucles() {
-    int x=0;
-    while(x<3)
+    while ( x != 0 )
     {
-        x++;
+        y=y+4;
     }
-    for(i=0;i<10;i++;){}
 }
-
-void pruebaForMulti()
-{   
-    int j=10;
-    for (int i = 0; i < j; i++) {
-        if ((i + j) % 2 == 0) {
-            continue;
-        }
-        if (i == 4) {
-            break;
-        }
+if(x>5)
+    {
+        y=10;
     }
+    else
+    {
+        x=x+y;
+    }
+int main()
+{
+   x=10;
+   y=8-2-4;
+   x=x/1;
 }
