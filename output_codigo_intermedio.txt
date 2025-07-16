@@ -1,0 +1,93 @@
+=== CÓDIGO INTERMEDIO (3 DIRECCIONES) ===
+Generado el: 2025-07-15T22:15:45.067740300
+
+ 0: main:
+ 1: asd = 4
+ 2: x = 10
+ 3: y = 3.14
+ 4: z = 2.718281
+ 5: c = 'A'
+ 6: s = "Hola mundo"
+ 7: flag = true
+ 8: t0 = x + 5
+ 9: x = t0
+10: t1 = x * y
+11: t2 = t1 - 2.5
+12: y = t2
+13: t3 = x + y
+14: t4 = t3 / 2.0
+15: z = t4
+16: t5 = x > 10
+17: ifFalse t5 goto L0
+18: t6 = y + 1.0
+19: y = t6
+20: goto L1
+21: L0:
+22: t7 = y - 1.0
+23: y = t7
+24: L1:
+25: t8 = x >= 5
+26: t9 = y <= 20.0
+27: t10 = t8 && t9
+28: ifFalse t10 goto L2
+29: flag = false
+30: goto L3
+31: L2:
+32: L3:
+33: t11 = x != 0
+34: t12 = flag || t11
+35: ifFalse t12 goto L4
+36: t13 = z * 2.0
+37: z = t13
+38: goto L5
+39: L4:
+40: L5:
+41: L6:
+42: t14 = x > 0
+43: ifFalse t14 goto L7
+44: t15 = x - 1
+45: x = t15
+46: t16 = x == 5
+47: ifFalse t16 goto L8
+48: goto L9
+49: L8:
+50: L9:
+51: t17 = x % 2
+52: t18 = t17 == 0
+53: ifFalse t18 goto L10
+54: goto L11
+55: L10:
+56: L11:
+57: goto L6
+58: L7:
+59: i = 0
+60: t19 = i < 10
+61: t20 = i + 1
+62: i = t20
+63: y = 0
+64: t21 = y + i
+65: y = t21
+66: t22 = x + y
+67: t23 = z - 1.0
+68: t24 = t22 * t23
+69: t25 = x != 0
+70: if t25 != 0 goto L12
+71: goto L13
+72: L13:
+73: error "División por cero"
+74: halt
+75: L12:
+76: t26 = t24 / t25
+77: resultado = t26
+78: imprimir:
+79: prefijo = '['
+80: mostrar = true
+81: valor = 0
+82: ifFalse mostrar goto L14
+83: t27 = valor + 1
+84: valor = t27
+85: goto L15
+86: L14:
+87: L15:
+
+Total de instrucciones: 88

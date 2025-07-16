@@ -13,6 +13,7 @@ int main()
     char c;
     string s;
     bool flag;
+    asd = 4;
     
     // Asignaciones básicas
     x = 10;

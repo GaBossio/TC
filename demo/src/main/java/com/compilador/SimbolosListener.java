@@ -62,20 +62,24 @@ public class SimbolosListener extends MiLenguajeBaseListener {
     }
     @Override
     public void enterExpresionPrimaria(ExpresionPrimariaContext ctx) {
-        // Verificar si es una referencia a variable (ID)
         if (ctx.ID() != null) {
             String nombre = ctx.ID().getText();
             try {
                 Simbolo simbolo = tabla.buscar(nombre);
                 if (simbolo.getCategoria() != Simbolo.Categoria.VARIABLE) {
-                    errores.add("'" + nombre + "' no es una variable válida en línea " + 
+                    errores.add("Error: '" + nombre + "' no es una variable válida en línea " + 
                               ctx.start.getLine());
                 }
             } catch (RuntimeException e) {
-                errores.add("Variable '" + nombre + "' no declarada en línea " + 
+                errores.add("Error: Variable '" + nombre + "' no declarada en línea " + 
                           ctx.start.getLine());
             }
         }
+    }
+
+    // Ejemplo de warning
+    public void agregarWarning(String mensaje) {
+        errores.add("Warning: " + mensaje);
     }
 
     @Override
