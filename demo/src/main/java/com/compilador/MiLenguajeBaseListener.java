@@ -1,4 +1,4 @@
-// Generated from com\compilador\MiLenguaje.g4 by ANTLR 4.9.3
+// Generated from com/compilador/MiLenguaje.g4 by ANTLR 4.13.1
 package com.compilador;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  * which can be extended to create a listener which only needs to handle a subset
  * of the available methods.
  */
+@SuppressWarnings("CheckReturnValue")
 public class MiLenguajeBaseListener implements MiLenguajeListener {
 	/**
 	 * {@inheritDoc}
@@ -119,6 +120,30 @@ public class MiLenguajeBaseListener implements MiLenguajeListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitInstruccionSimple(MiLenguajeParser.InstruccionSimpleContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterLlamadaFuncion(MiLenguajeParser.LlamadaFuncionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitLlamadaFuncion(MiLenguajeParser.LlamadaFuncionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterSentenciaExpr(MiLenguajeParser.SentenciaExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSentenciaExpr(MiLenguajeParser.SentenciaExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -383,18 +408,6 @@ public class MiLenguajeBaseListener implements MiLenguajeListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSentenciaContinue(MiLenguajeParser.SentenciaContinueContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterSentenciaExpr(MiLenguajeParser.SentenciaExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSentenciaExpr(MiLenguajeParser.SentenciaExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

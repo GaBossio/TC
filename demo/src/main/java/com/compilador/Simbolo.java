@@ -13,6 +13,7 @@ public class Simbolo {
     private final int columna;
     private final String ambito;
     private final List<String> parametros;
+    private boolean usada; // Nuevo campo para rastrear si el símbolo ha sido usado
 
     public enum Categoria {
         VARIABLE,
@@ -30,6 +31,7 @@ public class Simbolo {
         this.columna = columna;
         this.ambito = ambito;
         this.parametros = parametros;
+        this.usada = false; // Inicialmente, el símbolo no ha sido usado
     }
 
     public String getNombre() { return nombre; }
@@ -39,6 +41,16 @@ public class Simbolo {
     public int getColumna() { return columna; }
     public String getAmbito() { return ambito; }
     public List<String> getParametros() { return parametros; }
+
+    // Verificar si el símbolo ha sido usado
+    public boolean isUsada() {
+        return usada;
+    }
+
+    // Marcar el símbolo como usado
+    public void setUsada(boolean usada) {
+        this.usada = usada;
+    }
 
     @Override
     public String toString() {

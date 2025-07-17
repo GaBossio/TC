@@ -17,22 +17,8 @@ public class ColorLogger {
     
     // Variable para controlar si los colores están habilitados
     private static boolean coloresHabilitados = true;
-    private static boolean emojisHabilitados = false; // Por defecto deshabilitados
-    
-    public static void habilitarColores(boolean habilitar) {
-        coloresHabilitados = habilitar;
-    }
-    
-    public static void habilitarEmojis(boolean habilitar) {
-        emojisHabilitados = habilitar;
-    }
-    
-    // Detectar automáticamente el soporte
-    public static void detectarSoporte() {
-        // Forzar habilitación de colores y emojis
-        coloresHabilitados = true;
-        emojisHabilitados = true;
-    }
+    private static boolean emojisHabilitados = true;
+
     
     private static String aplicarColor(String texto, String color) {
         if (!coloresHabilitados) {

@@ -97,6 +97,26 @@ public interface MiLenguajeListener extends ParseTreeListener {
 	 */
 	void exitInstruccionSimple(MiLenguajeParser.InstruccionSimpleContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link MiLenguajeParser#llamadaFuncion}.
+	 * @param ctx the parse tree
+	 */
+	void enterLlamadaFuncion(MiLenguajeParser.LlamadaFuncionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiLenguajeParser#llamadaFuncion}.
+	 * @param ctx the parse tree
+	 */
+	void exitLlamadaFuncion(MiLenguajeParser.LlamadaFuncionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MiLenguajeParser#sentenciaExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterSentenciaExpr(MiLenguajeParser.SentenciaExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MiLenguajeParser#sentenciaExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitSentenciaExpr(MiLenguajeParser.SentenciaExprContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link MiLenguajeParser#instruccion}.
 	 * @param ctx the parse tree
 	 */
@@ -316,16 +336,6 @@ public interface MiLenguajeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSentenciaContinue(MiLenguajeParser.SentenciaContinueContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MiLenguajeParser#sentenciaExpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterSentenciaExpr(MiLenguajeParser.SentenciaExprContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MiLenguajeParser#sentenciaExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitSentenciaExpr(MiLenguajeParser.SentenciaExprContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link MiLenguajeParser#tipo}.
 	 * @param ctx the parse tree

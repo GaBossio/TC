@@ -54,4 +54,8 @@ public class TablaSimbolos {
         System.out.println("----------------------------------------------------------------");
         tabla.forEach(s -> System.out.println(s.toString()));
     }
+
+    public List<Simbolo> getTabla() {
+        return tabla;
+    }
 }

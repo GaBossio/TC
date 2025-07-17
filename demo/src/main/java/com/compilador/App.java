@@ -17,7 +17,7 @@ public class App {
         
         try {
             // 1. Lectura del archivo de entrada
-            ColorLogger.subtitulo("ANÁLISIS LÉXICO");
+            ColorLogger.subtitulo("ANALISIS LEXICO");
             CharStream input = CharStreams.fromFileName("demo/src/main/input/input.txt");
             
             // 2. Análisis léxico
@@ -26,7 +26,7 @@ public class App {
             
             // *** AGREGAR: Generar tabla de tokens ***
             mostrarTablaTokens(tokens, lexer);
-            ColorLogger.exito("Análisis lexico completado");
+            ColorLogger.exito("Analisis lexico completado");
             
             // 3. Análisis sintáctico
             ColorLogger.subtitulo("ANALISIS SINTACTICO");
@@ -48,6 +48,8 @@ public class App {
             SimbolosListener listener = new SimbolosListener();
             ParseTreeWalker.DEFAULT.walk(listener, tree);
 
+            listener.verificarVariablesNoUsadas();
+
             // 5. Revisión de errores semánticos
             List<String> errores = listener.getErrores();
             int contadorErrores = 0;
@@ -66,17 +68,17 @@ public class App {
                 }
             } else {
                 // 6. Imprimir la Tabla de Símbolos
-                ColorLogger.subtitulo("TABLA DE SÍMBOLOS");
+                ColorLogger.subtitulo("TABLA DE SIMBOLOS");
                 listener.getTablaSimbolos().imprimir();
-                ColorLogger.exito("Análisis semántico completado sin errores");
+                ColorLogger.exito("Analisis semántico completado sin errores");
             }
 
             // 7. Generación de código intermedio (solo si no hay errores críticos)
             if (contadorErrores == 0) {
-                ColorLogger.subtitulo("GENERACIÓN DE CÓDIGO INTERMEDIO");
+                ColorLogger.subtitulo("GENERACION DE CODIGO INTERMEDIO");
                 CodigoVisitor codeVisitor = new CodigoVisitor();
                 codeVisitor.visit(tree);
-                ColorLogger.exito("Codigo intermedio generado");
+                ColorLogger.exito("Codigo intermedio generado y optimizado");
 
                 // Generar archivo de salida
                 generarArchivoSalida(codeVisitor);
@@ -93,7 +95,7 @@ public class App {
         }
     }
 
-    // *** MÉTODO MEJORADO: Generar archivo de salida ***
+    // *** Generar archivo de salida ***
     private static void generarArchivoSalida(CodigoVisitor codeVisitor) {
         try {
             try (FileWriter writer = new FileWriter("output_codigo_intermedio.txt")) {
@@ -115,13 +117,13 @@ public class App {
         }
     }
 
-    // *** MÉTODO MEJORADO: Mostrar tabla de tokens ***
+    // *** Mostrar tabla de tokens ***
     private static void mostrarTablaTokens(CommonTokenStream tokens, MiLenguajeLexer lexer) {
         tokens.fill();
         
         ColorLogger.info("Tabla de tokens generada:");
         System.out.printf("%-5s %-15s %-20s %-8s %-5s %-10s%n", 
-                         "NUM", "TOKEN", "TEXTO", "LÍNEA", "COL", "CANAL");
+                         "NUM", "TOKEN", "TEXTO", "LINEA", "COL", "CANAL");
         System.out.println("─".repeat(70));
         
         int contador = 0;
