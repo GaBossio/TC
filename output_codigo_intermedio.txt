@@ -1,0 +1,108 @@
+=== CÓDIGO INTERMEDIO (3 DIRECCIONES) ===
+Generado el: 2025-07-17T01:43:55.395097100
+
+=== CÓDIGO ORIGINAL ===
+  0: // Código de tres direcciones generado
+  1: PROGRAMA_INICIO:
+  2: // Declaración de variables globales
+  3: DECLARE contadorGlobal int
+  4: DECLARE valorPi double
+  5: DECLARE inicial char
+  6: func_sumar:
+  7: PARAM a int
+  8: PARAM b int
+  9: DECLARE resultado int
+ 10: t1 = a + b
+ 11: resultado = t1
+ 12: t2 = contadorGlobal + 1
+ 13: contadorGlobal = t2
+ 14: return resultado
+ 15: func_main:
+ 16: DECLARE estado int
+ 17: DECLARE temp int
+ 18: DECLARE numeros int
+ 19: contadorGlobal = 0
+ 20: valorPi = 3.14
+ 21: inicial = 'M'
+ 22: numeros = 10
+ 23: numeros = 20
+ 24: numeros = 30
+ 25: temp = 60
+ 26: temp = 120
+ 27: temp = 40
+ 28: temp = 0
+ 29: CALL func_sumar, 0, 5
+ 30: t3 = RETURN_VALUE
+ 31: estado = t3
+ 32: contadorGlobal = estado
+ 33: valorPi = 0
+ 34: inicial = 'X'
+ 35: t4 = estado > 0
+ 36: t5 = t4
+ 37: if t5 goto THEN_1
+ 38: goto END_IF_2
+ 39: THEN_1:
+ 40: DECLARE auxiliar int
+ 41: t6 = estado + 10
+ 42: auxiliar = t6
+ 43: estado = auxiliar
+ 44: END_IF_2:
+ 45: return estado
+ 46: PROGRAMA_FIN:
+
+Total de instrucciones originales: 47
+
+=== CÓDIGO OPTIMIZADO ===
+  0: // Código de tres direcciones generado
+  1: // Declaración de variables globales
+  2: DECLARE contadorGlobal int
+  3: DECLARE valorPi double
+  4: DECLARE inicial char
+  5: PARAM a int
+  6: PARAM b int
+  7: DECLARE resultado int
+  8: t1 = a + b
+  9: resultado = t1
+ 10: t2 = contadorGlobal + 1
+ 11: contadorGlobal = t2
+ 12: return resultado
+ 13: DECLARE estado int
+ 14: DECLARE temp int
+ 15: DECLARE numeros int
+ 16: contadorGlobal = 0
+ 17: valorPi = 3.14
+ 18: inicial = 'M'
+ 19: numeros = 10
+ 20: numeros = 20
+ 21: numeros = 30
+ 22: temp = 60
+ 23: temp = 120
+ 24: temp = 40
+ 25: temp = 0
+ 26: CALL func_sumar, 0, 5
+ 27: t3 = RETURN_VALUE
+ 28: estado = t3
+ 29: contadorGlobal = estado
+ 30: valorPi = 0
+ 31: inicial = 'X'
+ 32: t4 = estado > 0
+ 33: t5 = t4
+ 34: if t5 goto THEN_1
+ 35: goto END_IF_2
+ 36: THEN_1:
+ 37: DECLARE auxiliar int
+ 38: t6 = estado + 10
+ 39: auxiliar = t6
+ 40: estado = auxiliar
+ 41: END_IF_2:
+ 42: return estado
+
+Total de instrucciones optimizadas: 43
+Instrucciones eliminadas: 4
+Porcentaje de optimización: 8,51%
+
+=== ESTADÍSTICAS DE COMPILACIÓN ===
+• Variables temporales generadas: 6
+• Etiquetas generadas: 6
+• Llamadas a funciones: 1
+• Declaraciones: 8

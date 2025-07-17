@@ -41,18 +41,26 @@ instruccionSimple
     | sentenciaRetorno
     | sentenciaBreak
     | sentenciaContinue
-    | sentenciaExpr
+    | llamadaFuncion PUNTOYCOMA
     | sentenciaIf
+    ;
+
+llamadaFuncion
+    : ID PAREN_IZQ (expresion (COMA expresion)*)? PAREN_DER
+    ;
+
+sentenciaExpr
+    : llamadaFuncion PUNTOYCOMA
     ;
 
 instruccion
     : instruccionSimple
-    ;
+   ;
 
 // Nueva regla para asignaciones
 asignacion
     : ID ASIGNAR expresion PUNTOYCOMA
-    ;
+   ;
 
 // Nueva regla para asignaciones compuestas y operadores unarios
 asignacionCompuesta
@@ -61,7 +69,7 @@ asignacionCompuesta
     | (INCREMENTO | DECREMENTO) ID PUNTOYCOMA
     ;
 
-// Nueva regla para if statements
+    // Nueva regla para if statements
 sentenciaIf
     : SI PAREN_IZQ expresion PAREN_DER bloque (SINO bloque)?
     ;
@@ -116,6 +124,7 @@ expresionUnaria
 
 expresionPostfijo
     : expresionPrimaria (INCREMENTO | DECREMENTO)?
+    | llamadaFuncion
     ;
 
 expresionPrimaria
@@ -149,10 +158,6 @@ sentenciaContinue
     : CONTINUAR PUNTOYCOMA
     ;
 
-sentenciaExpr
-    : expresion PUNTOYCOMA
-    ;
-
 tipo
     : INT
     | FLOAT
@@ -173,7 +178,7 @@ literal
     | FALSE
     ;
 
-// Separados los operadores aritméticos de los de comparación
+    // Separados los operadores aritméticos de los de comparación
 operadorAritmetico
     : MAS
     | MENOS
@@ -191,7 +196,7 @@ operadorComparacion
     | MENOR
     ;
 
-// Operadores lógicos
+    // Operadores lógicos
 operadorLogico
     : Y_LOGICO
     | O_LOGICO
