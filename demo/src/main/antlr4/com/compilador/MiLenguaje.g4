@@ -55,12 +55,12 @@ sentenciaExpr
 
 instruccion
     : instruccionSimple
-    ;
+   ;
 
 // Nueva regla para asignaciones
 asignacion
     : ID ASIGNAR expresion PUNTOYCOMA
-    ;
+   ;
 
 // Nueva regla para asignaciones compuestas y operadores unarios
 asignacionCompuesta
@@ -124,6 +124,7 @@ expresionUnaria
 
 expresionPostfijo
     : expresionPrimaria (INCREMENTO | DECREMENTO)?
+    | llamadaFuncion
     ;
 
 expresionPrimaria

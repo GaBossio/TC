@@ -1,156 +1,59 @@
-#include <stdio.h>
-#include "math.h"
+// Variables globales
+int variableGlobal;
+int variableGlobal; // ERROR: Variable duplicada en el mismo ámbito
+double valorGlobal;
+char caracterGlobal;
 
-// ========== CASOS VÁLIDOS ==========
+// Función con múltiples errores
+int miFuncion(int parametro1, double parametro2) {
+    int variableLocal;
+    int variableLocal; // ERROR: Variable duplicada en función
+    
+    // Variables nunca utilizadas (WARNING)
+    int variableNoUsada1;
+    string variableNoUsada2;
+    double variableNoUsada3;
+    
+    parametro1 = 100; // OK: asignación a parámetro
+    variableLocal = parametro1 + 5; // OK: uso de variable
+    
+    // ERROR: Asignación a variable no declarada
+    variableFantasma = 42;
+    
+    // ERROR: Asignación a una función (no es variable)
+    miFuncion = 10;
+    
+    // OK: usar variable global
+    valorGlobal = 3.14;
+    
+    return variableLocal;
+}
 
-// Función principal
-int main()
-{
-    // Declaraciones de variables
+void funcionVoid() {
     int x;
-    float y;
-    double z;
-    char c;
-    string s;
-    bool flag;
+    int y;
+    int z; // WARNING: declarada pero no usada
     
-    // Asignaciones básicas
-    x = 10;
-    y = 3.14;
-    z = 2.718281;
-    c = 'A';
-    s = "Hola mundo";
-    flag = true;
+    x = 10; // OK
+    y = x + 5; // OK: uso de variables
     
-    // Expresiones aritméticas
-    x = x + 5;
-    y = x * y - 2.5;
-    z = (x + y) / 2.0;
-    
-    // Operadores de comparación
-    if (x > 10)
-    {
-        y = y + 1.0;
-    }
-    else
-    {
-        y = y - 1.0;
-    }
-    
-    // Operadores lógicos
-    if (x >= 5 && y <= 20.0)
-    {
-        flag = false;
-    }
-    
-    if (flag || x != 0)
-    {
-        z = z * 2.0;
-    }
-    
-    // Bucle while
-    while (x > 0)
-    {
-        x = x - 1;
-        if (x == 5)
-        {
-            break;
-        }
-        if (x % 2 == 0)
-        {
-            continue;
-        }
-    }
-    
-    // Bucle for
-    for (int i = 0; i < 10; i++)
-    {
-        y = 0;
-        y = y + i;
-    }
-    
-    // Asignaciones compuestas
-    x += 5;
-    y -= 2.5;
-    z *= 1.5;
-    x /= 2;
-    x %= 3;
-    
-    // Operadores unarios
-    x++;
-    --y;
-    ++z;
-    x--;
-    
-    // Expresiones complejas
-    int resultado = (x + y) * (z - 1.0) / (x != 0 ? x : 1);
-    
-    return 0;
+    // ERROR: variable no declarada
+    w = x + y;
 }
 
-// Función void
-void imprimir(string mensaje)
-{
-    // Variables locales
-    char prefijo;
-    bool mostrar;
-    
-    prefijo = '[';
-    mostrar = true;
-    int valor = 0;
-    
-    if (mostrar)
-    {
-        // Usar parámetros
-        valor = valor + 1;
-    }
-}
-
-// ========== CASOS DE ERROR ==========
-/*
-void testErrores()
-{
-    // Error 1: Variable duplicada
-    int duplicada;
-    int duplicada;  // ERROR: Variable ya declarada
-    
-    // Error 2: Variable no declarada
-    noDeclarada = 5;  // ERROR: Variable no existe
-    
-    // Error 3: Uso de variable de otro ámbito
-    x = 10;  // ERROR: x está en main(), no aquí
-    
-    // Error 4: Función como variable
-    main = 5;  // ERROR: main es función, no variable
-    
-    // Error 5: Variable local oculta parámetro global
-    int a;
-    a = b;  // ERROR: b no declarada en este ámbito
-}
-
-// Función para probar más errores
-int funcionError(int param1, float param2)
-{
-    // Error 6: Parámetro duplicado (si el análisis lo detecta)
-    // int funcionDuplicada(int x, int x) // Descomenta para probar
-    
-    // Error 7: Uso de variable antes de declaración
-    resultado = param1 + 10;  // ERROR: resultado no declarada
+// Función main para completar el programa
+int main() {
     int resultado;
+    int valor;
     
-    // Error 8: Variable de función externa
-    temp = param2;  // ERROR: temp está en calcular(), no aquí
+    resultado = miFuncion(5, 3.14); // OK: uso de función
+    valor = resultado + 10;         // OK: uso de variables
     
-    return param1;
+    // ERROR: variable no declarada
+    variableFinal = valor;
+    
+    // OK: usar variable global
+    variableGlobal = valor;
+    
+    return resultado;
 }
-
-// Función con errores de ámbito
-void errorAmbito()
-{
-    // Error 9: Variables de funciones anteriores
-    a = b + c;  // ERROR: a, b, c no están en este ámbito
-    
-    // Error 10: Parámetros de otras funciones
-    param1 = 5;  // ERROR: param1 es de funcionError()
-}
-*/

@@ -1,5 +1,6 @@
 package com.compilador;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,9 +9,9 @@ import com.compilador.MiLenguajeParser.*;
 
 public class CodigoVisitor extends MiLenguajeBaseVisitor<String> {
     private final GeneradorCodigo gen = new GeneradorCodigo();
-    // *** NUEVO: Para propagación de constantes ***
     private final Map<String, String> constantesPropagadas = new HashMap<>();
     private int optimizacionesAplicadas = 0;
+    private boolean enMain = false;
 
     public GeneradorCodigo getGen() {
         return gen;
@@ -18,21 +19,75 @@ public class CodigoVisitor extends MiLenguajeBaseVisitor<String> {
 
     @Override
     public String visitProgram(MiLenguajeParser.ProgramContext ctx) {
-        // Genera código para cada elemento (funciones y declaraciones)
+        // Encabezado del programa
+        gen.emit("// Código de tres direcciones generado");
+        gen.emit("PROGRAMA_INICIO:");
+        gen.emit("// Declaración de variables globales");
+        
+        // Procesar elementos del programa
         for (MiLenguajeParser.ElementoContext e : ctx.elemento()) {
             visit(e);
         }
+        
+        // Final del programa
+        gen.emit("PROGRAMA_FIN:");
 
-        // *** MANTENER: Mostrar el código intermedio original ***
+        // Mostrar código intermedio
         System.out.println("\n=== Código Intermedio (3 direcciones) ===");
         List<String> instrs = gen.getInstrucciones();
         for (int i = 0; i < instrs.size(); i++) {
-            System.out.printf("%2d: %s%n", i, instrs.get(i));
+            System.out.printf("%3d: %s%n", i, instrs.get(i));
         }
 
-        // *** NUEVO: Aplicar y mostrar optimizaciones ***
         aplicarOptimizaciones();
+        return null;
+    }
 
+    @Override
+    public String visitDeclaracionVariable(MiLenguajeParser.DeclaracionVariableContext ctx) {
+        String nombreVariable = ctx.ID().getText();
+        String tipoVariable = ctx.tipo().getText();
+        
+        if (ctx.expresion() != null) {
+            // Variable con inicialización
+            String temp = visit(ctx.expresion());
+            gen.emit(nombreVariable + " = " + temp);
+        } else {
+            // Variable sin inicialización - solo declarar
+            if (!enMain) {
+                // Variables globales
+                gen.emit("DECLARE " + nombreVariable + " " + tipoVariable);
+            } else {
+                // Variables locales
+                gen.emit("DECLARE " + nombreVariable + " " + tipoVariable);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String visitDeclaracionFuncion(MiLenguajeParser.DeclaracionFuncionContext ctx) {
+        String nombre = ctx.ID().getText();
+        
+        if (nombre.equals("main")) {
+            enMain = true;
+            gen.emit("func_main:");
+        } else {
+            gen.emit("func_" + nombre + ":");
+        }
+        
+        // Agregar parámetros si existen
+        if (ctx.listaParametros() != null) {
+            for (ParametroContext param : ctx.listaParametros().parametro()) {
+                String nombreParam = param.ID().getText();
+                String tipoParam = param.tipo().getText();
+                gen.emit("PARAM " + nombreParam + " " + tipoParam);
+            }
+        }
+        
+        visit(ctx.bloque());
+        
+        enMain = false;
         return null;
     }
 
@@ -41,15 +96,13 @@ public class CodigoVisitor extends MiLenguajeBaseVisitor<String> {
         String id = ctx.ID().getText();
         String valor = visit(ctx.expresion());
         
-        // *** PROPAGACIÓN DE CONSTANTES ***
         if (esConstante(valor)) {
             constantesPropagadas.put(id, valor);
-            gen.emit(id + " = " + valor);
         } else {
-            // Eliminar de constantes si ya no es constante
             constantesPropagadas.remove(id);
-            gen.emit(id + " = " + valor);
         }
+        
+        gen.emit(id + " = " + valor);
         return id;
     }
 
@@ -57,7 +110,6 @@ public class CodigoVisitor extends MiLenguajeBaseVisitor<String> {
     public String visitExpresionPrimaria(MiLenguajeParser.ExpresionPrimariaContext ctx) {
         if (ctx.ID() != null) {
             String nombre = ctx.ID().getText();
-            // *** PROPAGAR CONSTANTE SI EXISTE ***
             if (constantesPropagadas.containsKey(nombre)) {
                 return constantesPropagadas.get(nombre);
             }
@@ -71,21 +123,48 @@ public class CodigoVisitor extends MiLenguajeBaseVisitor<String> {
     }
 
     @Override
+    public String visitLlamadaFuncion(MiLenguajeParser.LlamadaFuncionContext ctx) {
+        String nombreFuncion = ctx.ID().getText();
+        
+        // Generar parámetros de la llamada
+        List<String> params = new ArrayList<>();
+        if (ctx.expresion() != null && !ctx.expresion().isEmpty()) {
+            for (MiLenguajeParser.ExpresionContext expr : ctx.expresion()) {
+                String paramValue = visit(expr);
+                if (paramValue != null && !paramValue.isEmpty()) {
+                    params.add(paramValue);
+                }
+            }
+        }
+        
+        // Emitir llamada a función con formato mejorado
+        StringBuilder callBuilder = new StringBuilder();
+        callBuilder.append("CALL func_").append(nombreFuncion);
+        for (String param : params) {
+            callBuilder.append(", ").append(param);
+        }
+        gen.emit(callBuilder.toString());
+        
+        // Generar variable temporal para el valor de retorno
+        String temp = gen.newTemp();
+        gen.emit(temp + " = RETURN_VALUE");
+        
+        return temp;
+    }
+
+    @Override
     public String visitExpresionAritmetica(MiLenguajeParser.ExpresionAritmeticaContext ctx) {
-        // caso un solo operando
         if (ctx.operadorAritmetico().isEmpty()) {
             return visit(ctx.expresionUnaria(0));
         }
         
-        // Empieza por la izquierda
         String result = visit(ctx.expresionUnaria(0));
         
-        // Procesa de izquierda a derecha
         for (int i = 1; i < ctx.expresionUnaria().size(); i++) {
             String op = ctx.operadorAritmetico(i-1).getText();
             String right = visit(ctx.expresionUnaria(i));
             
-            // *** SIMPLIFICACIÓN DE EXPRESIONES ***
+            // Simplificaciones
             String simplificado = simplificarExpresion(result, op, right);
             if (simplificado != null) {
                 optimizacionesAplicadas++;
@@ -93,7 +172,7 @@ public class CodigoVisitor extends MiLenguajeBaseVisitor<String> {
                 continue;
             }
 
-            // *** PROPAGACIÓN DE CONSTANTES: Evaluar expresiones constantes ***
+            // Evaluación de constantes
             if (esConstante(result) && esConstante(right)) {
                 try {
                     double resultado = evaluarConstantes(result, op, right);
@@ -102,30 +181,19 @@ public class CodigoVisitor extends MiLenguajeBaseVisitor<String> {
                     result = valorCalculado;
                     continue;
                 } catch (Exception e) {
-                    // Si hay error, continuar con código normal
+                    // Continuar con código normal
                 }
             }
             
-            // Division por 0 check
+            // Verificación de división por cero
             if (op.equals("/") || op.equals("%")) {
                 if (right.equals("0")) {
-                    System.err.println("ERROR: División por cero detectada en tiempo de compilación");
+                    System.err.println("ERROR: División por cero detectada");
                     throw new RuntimeException("División por cero no permitida");
-                }
-                else if (!isNumericLiteral(right)) {
-                    String checkLabel = gen.newLabel();
-                    String errorLabel = gen.newLabel();
-                    
-                    gen.emit("if " + right + " != 0 goto " + checkLabel);
-                    gen.emit("goto " + errorLabel);
-                    gen.emit(errorLabel + ":");
-                    gen.emit("error \"División por cero\"");
-                    gen.emit("halt");
-                    gen.emit(checkLabel + ":");
                 }
             }
             
-            // Genera la operacion normal
+            // Generar operación normal
             String temp = gen.newTemp();
             gen.emit(temp + " = " + result + " " + op + " " + right);
             result = temp;
@@ -133,31 +201,84 @@ public class CodigoVisitor extends MiLenguajeBaseVisitor<String> {
         return result;
     }
 
-    // *** NUEVO: Método de simplificación de expresiones ***
+    @Override
+    public String visitSentenciaIf(MiLenguajeParser.SentenciaIfContext ctx) {
+        String cond = visit(ctx.expresion());
+        String labelThen = "THEN_" + gen.getContadorEtiquetas();
+        String labelEnd = "END_IF_" + gen.getContadorEtiquetas();
+        
+        String tempCond = gen.newTemp();
+        gen.emit(tempCond + " = " + cond);
+        gen.emit("if " + tempCond + " goto " + labelThen);
+        gen.emit("goto " + labelEnd);
+        gen.emit(labelThen + ":");
+        
+        visit(ctx.bloque(0));
+        
+        if (ctx.bloque(1) != null) {
+            String labelElse = "ELSE_" + gen.getContadorEtiquetas();
+            gen.emit("goto " + labelEnd);
+            gen.emit(labelElse + ":");
+            visit(ctx.bloque(1));
+        }
+        
+        gen.emit(labelEnd + ":");
+        return null;
+    }
+
+    @Override
+    public String visitWhileLoop(MiLenguajeParser.WhileLoopContext ctx) {
+        String start = "WHILE_START_" + gen.getContadorEtiquetas();
+        String end = "WHILE_END_" + gen.getContadorEtiquetas();
+
+        gen.emit(start + ":");
+        String cond = visit(ctx.expresion());
+        String tempCond = gen.newTemp();
+        gen.emit(tempCond + " = " + cond);
+        gen.emit("if " + tempCond + " goto " + end);
+        
+        visit(ctx.bloque());
+        
+        gen.emit("goto " + start);
+        gen.emit(end + ":");
+        return null;
+    }
+
+    @Override
+    public String visitSentenciaRetorno(MiLenguajeParser.SentenciaRetornoContext ctx) {
+        if (ctx.expresion() != null) {
+            String valor = visit(ctx.expresion());
+            gen.emit("return " + valor);
+        } else {
+            gen.emit("return");
+        }
+        return null;
+    }
+
+    // Métodos auxiliares (sin cambios significativos)
     private String simplificarExpresion(String left, String op, String right) {
         switch (op) {
             case "+":
-                if (left.equals("0")) return right;  // 0 + x = x
-                if (right.equals("0")) return left;  // x + 0 = x
+                if (left.equals("0")) return right;
+                if (right.equals("0")) return left;
                 break;
             case "-":
-                if (right.equals("0")) return left;  // x - 0 = x
-                if (left.equals(right)) return "0";  // x - x = 0
+                if (right.equals("0")) return left;
+                if (left.equals(right)) return "0";
                 break;
             case "*":
-                if (left.equals("0") || right.equals("0")) return "0";  // x * 0 = 0
-                if (left.equals("1")) return right;  // 1 * x = x
-                if (right.equals("1")) return left;  // x * 1 = x
+                if (left.equals("0") || right.equals("0")) return "0";
+                if (left.equals("1")) return right;
+                if (right.equals("1")) return left;
                 break;
             case "/":
-                if (right.equals("1")) return left;  // x / 1 = x
-                if (left.equals(right) && !left.equals("0")) return "1";  // x / x = 1
+                if (right.equals("1")) return left;
+                if (left.equals(right) && !left.equals("0")) return "1";
                 break;
         }
         return null;
     }
 
-    // *** NUEVO: Verificar si es una constante ***
     private boolean esConstante(String valor) {
         try {
             Double.parseDouble(valor);
@@ -167,7 +288,6 @@ public class CodigoVisitor extends MiLenguajeBaseVisitor<String> {
         }
     }
 
-    // *** NUEVO: Evaluar expresiones constantes ***
     private double evaluarConstantes(String left, String op, String right) {
         double l = Double.parseDouble(left);
         double r = Double.parseDouble(right);
@@ -186,7 +306,6 @@ public class CodigoVisitor extends MiLenguajeBaseVisitor<String> {
         }
     }
 
-    // *** NUEVO: Formatear resultado ***
     private String formatearResultado(double resultado) {
         if (resultado == (long) resultado) {
             return String.valueOf((long) resultado);
@@ -195,110 +314,80 @@ public class CodigoVisitor extends MiLenguajeBaseVisitor<String> {
         }
     }
 
-    // *** NUEVO: Aplicar optimizaciones al final ***
     private void aplicarOptimizaciones() {
         if (optimizacionesAplicadas > 0) {
             ColorLogger.subtitulo("OPTIMIZACIONES APLICADAS");
             ColorLogger.exito("Se aplicaron " + optimizacionesAplicadas + " optimizaciones durante la generación");
         }
         
-        // Crear una copia de las instrucciones para optimizar
+        // *** SOLO MOSTRAR EN CONSOLA, NO DUPLICAR EN ARCHIVO ***
         List<String> instruccionesOriginales = List.copyOf(gen.getInstrucciones());
         
-        // Aplicar eliminación de código muerto
         OptimizadorCodigoMuerto optimizador = new OptimizadorCodigoMuerto();
         List<String> instruccionesOptimizadas = optimizador.eliminarCodigoMuerto(instruccionesOriginales);
         
-        // Solo mostrar si hay diferencias
         if (instruccionesOptimizadas.size() != instruccionesOriginales.size()) {
             System.out.println("\n=== Código Intermedio Optimizado ===");
             for (int i = 0; i < instruccionesOptimizadas.size(); i++) {
-                System.out.printf("%2d: %s%n", i, instruccionesOptimizadas.get(i));
+                System.out.printf("%3d: %s%n", i, instruccionesOptimizadas.get(i));
             }
             
             ColorLogger.info("Instrucciones eliminadas: " + (instruccionesOriginales.size() - instruccionesOptimizadas.size()));
+            ColorLogger.info("Código completo guardado en 'output_codigo_intermedio.txt'");
         } else {
             ColorLogger.info("No se encontró código muerto para eliminar");
         }
     }
 
-    // *** RESTO DEL CÓDIGO EXISTENTE SIN CAMBIOS ***
-    @Override
-    public String visitDeclaracionFuncion(MiLenguajeParser.DeclaracionFuncionContext ctx) {
-        String name = ctx.ID().getText();
-        gen.emit(name + ":");
-        visit(ctx.bloque());
-        return null;
-    }
-
-    @Override
-    public String visitSentenciaIf(MiLenguajeParser.SentenciaIfContext ctx) {
-        String cond = visit(ctx.expresion());
-        String labelElse = gen.newLabel();
-        String labelEnd  = gen.newLabel();
-
-        gen.emit("ifFalse " + cond + " goto " + labelElse);
-        visit(ctx.bloque(0));
-        gen.emit("goto " + labelEnd);
-        gen.emit(labelElse + ":");
-        if (ctx.bloque(1) != null) {
-            visit(ctx.bloque(1));
-        }
-        gen.emit(labelEnd + ":");
-        return null;
-    }
-
-    @Override
-    public String visitWhileLoop(MiLenguajeParser.WhileLoopContext ctx) {
-        String start = gen.newLabel();
-        String end   = gen.newLabel();
-
-        gen.emit(start + ":");
-        String cond = visit(ctx.expresion());
-        gen.emit("ifFalse " + cond + " goto " + end);
-        visit(ctx.bloque());
-        gen.emit("goto " + start);
-        gen.emit(end + ":");
-        return null;
-    }
-
-    @Override
-    public String visitDeclaracionVariable(MiLenguajeParser.DeclaracionVariableContext ctx) {
-        if (ctx.expresion() != null) {
-            String temp = visit(ctx.expresion());
-            gen.emit(ctx.ID().getText() + " = " + temp);
-        }
-        return null;
-    }
-
+    // Resto de métodos visitXXX sin cambios...
     @Override
     public String visitExpresionUnaria(MiLenguajeParser.ExpresionUnariaContext ctx) {
         if (ctx.MENOS() != null) {
             String v = visit(ctx.expresionUnaria());
-            String temp = gen.newTemp();
-            gen.emit(temp + " = 0 - " + v);
-            return temp;
+            if (v != null && !v.isEmpty()) {
+                String temp = gen.newTemp();
+                gen.emit(temp + " = 0 - " + v);
+                return temp;
+            }
         }
         if (ctx.NO_LOGICO() != null) {
             String v = visit(ctx.expresionUnaria());
-            String temp = gen.newTemp();
-            gen.emit(temp + " = !" + v);
-            return temp;
+            if (v != null && !v.isEmpty()) {
+                String temp = gen.newTemp();
+                gen.emit(temp + " = !" + v);
+                return temp;
+            }
         }
-        return visit(ctx.expresionPostfijo());
+        
+        if (ctx.expresionPostfijo() != null) {
+            return visit(ctx.expresionPostfijo());
+        }
+        
+        return "";
     }
 
     @Override
     public String visitExpresionPostfijo(MiLenguajeParser.ExpresionPostfijoContext ctx) {
         if (ctx.INCREMENTO() != null || ctx.DECREMENTO() != null) {
-            String id = ctx.expresionPrimaria().getText();
-            String op = ctx.INCREMENTO() != null ? " + 1" : " - 1";
-            String temp = gen.newTemp();
-            gen.emit(temp + " = " + id + op);
-            gen.emit(id + " = " + temp);
-            return temp;
+            if (ctx.expresionPrimaria() != null) {
+                String id = ctx.expresionPrimaria().getText();
+                String op = ctx.INCREMENTO() != null ? " + 1" : " - 1";
+                String temp = gen.newTemp();
+                gen.emit(temp + " = " + id + op);
+                gen.emit(id + " = " + temp);
+                return temp;
+            }
         }
-        return visit(ctx.expresionPrimaria());
+        
+        if (ctx.llamadaFuncion() != null) {
+            return visit(ctx.llamadaFuncion());
+        }
+        
+        if (ctx.expresionPrimaria() != null) {
+            return visit(ctx.expresionPrimaria());
+        }
+        
+        return "";
     }
 
     @Override
@@ -356,14 +445,5 @@ public class CodigoVisitor extends MiLenguajeBaseVisitor<String> {
     @Override
     protected String aggregateResult(String aggregate, String nextResult) {
         return nextResult != null ? nextResult : aggregate;
-    }
-
-    private boolean isNumericLiteral(String value) {
-        try {
-            Double.parseDouble(value);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
     }
 }

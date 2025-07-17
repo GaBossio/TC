@@ -39,26 +39,33 @@ public class SimbolosListener extends MiLenguajeBaseListener {
             errores.add(e.getMessage());
         }
 
+        // Cambiar al ámbito de la función
         tabla.setAmbito(nombre);
+        
+        // *** NUEVO: Agregar parámetros a la tabla de símbolos ***
+        if (ctx.listaParametros() != null) {
+            for (ParametroContext param : ctx.listaParametros().parametro()) {
+                String nombreParam = param.ID().getText();
+                String tipoParam = param.tipo().getText();
+                int lineaParam = param.start.getLine();
+                int colParam = param.start.getCharPositionInLine();
+                
+                Simbolo parametro = new Simbolo(
+                        nombreParam, tipoParam, Simbolo.Categoria.PARAMETRO,
+                        lineaParam, colParam, nombre, null);
+                
+                try {
+                    tabla.agregar(parametro);
+                } catch (RuntimeException e) {
+                    errores.add(e.getMessage());
+                }
+            }
+        }
     }
 
     @Override
     public void exitDeclaracionFuncion(DeclaracionFuncionContext ctx) {
-        String nombre = ctx.ID().getText();
-        
-        
-        if (nombre.equals("main")) {
-            tabla.setAmbito("global");
-            return;
-        }
-        
-        try {
-            Simbolo simbolo = tabla.buscar(nombre);
-            if (!simbolo.isUsada()) {
-                agregarWarning("Función '" + nombre + "' declarada pero no llamada en línea " + ctx.start.getLine());
-            }
-        } catch (RuntimeException e) {
-        }
+        // Sólo reajusta el ámbito a global, sin avisos aquí
         tabla.setAmbito("global");
     }
 
@@ -86,7 +93,9 @@ public class SimbolosListener extends MiLenguajeBaseListener {
             try {
                 Simbolo simbolo = tabla.buscar(nombre);
                 simbolo.setUsada(true);
-                if (simbolo.getCategoria() != Simbolo.Categoria.VARIABLE) {
+                // *** ACTUALIZADO: Permitir parámetros como variables válidas ***
+                if (simbolo.getCategoria() != Simbolo.Categoria.VARIABLE && 
+                    simbolo.getCategoria() != Simbolo.Categoria.PARAMETRO) {
                     errores.add("Error: '" + nombre + "' no es una variable válida en línea " +
                             ctx.start.getLine());
                 }
@@ -99,12 +108,13 @@ public class SimbolosListener extends MiLenguajeBaseListener {
 
     @Override
     public void enterAsignacion(AsignacionContext ctx) {
-        // Verificar que la variable del lado izquierdo esté declarada
         String nombre = ctx.ID().getText();
         try {
             Simbolo simbolo = tabla.buscar(nombre);
             simbolo.setUsada(true);
-            if (simbolo.getCategoria() != Simbolo.Categoria.VARIABLE) {
+            // *** ACTUALIZADO: Permitir parámetros en asignaciones ***
+            if (simbolo.getCategoria() != Simbolo.Categoria.VARIABLE && 
+                simbolo.getCategoria() != Simbolo.Categoria.PARAMETRO) {
                 errores.add("'" + nombre + "' no es una variable válida para asignación en línea " +
                         ctx.start.getLine());
             }
@@ -138,16 +148,31 @@ public class SimbolosListener extends MiLenguajeBaseListener {
         }
     }
 
+    // *** NUEVO: Manejar llamadas a funciones ***
+    @Override
+    public void enterLlamadaFuncion(LlamadaFuncionContext ctx) {
+        String nombreFuncion = ctx.ID().getText();
+        try {
+            Simbolo simbolo = tabla.buscar(nombreFuncion);
+            simbolo.setUsada(true);
+            if (simbolo.getCategoria() != Simbolo.Categoria.FUNCION) {
+                errores.add("Error: '" + nombreFuncion + "' no es una función válida en línea " +
+                        ctx.start.getLine());
+            }
+        } catch (RuntimeException e) {
+            errores.add("Error: Función '" + nombreFuncion + "' no declarada en línea " +
+                    ctx.start.getLine());
+        }
+    }
+
     @Override
     public void enterExpresionAritmetica(ExpresionAritmeticaContext ctx) {
-        // Verificar si hay operadores aritméticos
         if (!ctx.operadorAritmetico().isEmpty()) {
             for (int i = 0; i < ctx.operadorAritmetico().size(); i++) {
                 String operador = ctx.operadorAritmetico(i).getText();
                 String left = ctx.expresionUnaria(i).getText();
                 String right = ctx.expresionUnaria(i + 1).getText();
 
-                // Detectar operaciones redundantes
                 if (operador.equals("+") && (left.equals("0") || right.equals("0"))) {
                     agregarWarning("Operación redundante '" + left + " + " + right + "' en línea " + ctx.start.getLine());
                 }
@@ -157,8 +182,23 @@ public class SimbolosListener extends MiLenguajeBaseListener {
 
     public void verificarVariablesNoUsadas() {
         for (Simbolo simbolo : tabla.getTabla()) {
-            if (simbolo.getCategoria() == Simbolo.Categoria.VARIABLE && !simbolo.isUsada()) {
+            // *** ACTUALIZADO: Solo verificar variables y parámetros, no funciones ***
+            if ((simbolo.getCategoria() == Simbolo.Categoria.VARIABLE || 
+                 simbolo.getCategoria() == Simbolo.Categoria.PARAMETRO) && 
+                !simbolo.isUsada()) {
                 agregarWarning("Variable '" + simbolo.getNombre() + "' declarada pero no utilizada en línea " + simbolo.getLinea());
+            }
+        }
+    }
+
+    // Nuevo método: verificar funciones no usadas
+    public void verificarFuncionesNoUsadas() {
+        for (Simbolo simbolo : tabla.getTabla()) {
+            if (simbolo.getCategoria() == Simbolo.Categoria.FUNCION
+                && !simbolo.getNombre().equals("main")
+                && !simbolo.isUsada()) {
+                agregarWarning("Función '" + simbolo.getNombre() +
+                               "' declarada pero no llamada en línea " + simbolo.getLinea());
             }
         }
     }

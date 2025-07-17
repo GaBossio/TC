@@ -4,23 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GeneradorCodigo {
-    private int tempCount = 0;
-    private int labelCount = 0;
     private final List<String> instrucciones = new ArrayList<>();
+    private int contadorTemporales = 0;
+    private int contadorEtiquetas = 0;
+
+    public void emit(String instruccion) {
+        instrucciones.add(instruccion);
+    }
 
     public String newTemp() {
-        return "t" + (tempCount++);
+        return "t" + (++contadorTemporales);
     }
 
     public String newLabel() {
-        return "L" + (labelCount++);
+        return "L" + (++contadorEtiquetas);
     }
 
-    public void emit(String instr) {
-        instrucciones.add(instr);
+    public int getContadorEtiquetas() {
+        return ++contadorEtiquetas;
     }
 
     public List<String> getInstrucciones() {
-        return instrucciones;
+        return new ArrayList<>(instrucciones);
     }
 }
