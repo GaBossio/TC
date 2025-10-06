@@ -1,0 +1,12 @@
+name: Print Action Root Folder
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4 # Checkout your repository code
+
+      - name: Print GITHUB_WORKSPACE
+        run: echo "The action's root folder is: $GITHUB_WORKSPACE"
